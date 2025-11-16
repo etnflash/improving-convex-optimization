@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about convex sets and convexity - fundamental concepts in convex optimization.">
+    <title>Convexity - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- MathJax for rendering mathematical equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="convexity.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Understanding Convexity</h1>
+            <p>The foundation of convex optimization</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section id="convex-sets">
+            <h2>What is a Convex Set?</h2>
+            
+            <p>
+                A convex set is one of the most fundamental concepts in convex optimization. 
+                Understanding convex sets is essential because they define the feasible regions 
+                where optimization problems can be efficiently solved.
+            </p>
+
+            <div class="definition">
+                <h4>Definition: Convex Set</h4>
+                <p>
+                    A set \(C \subseteq \mathbb{R}^n\) is called <strong>convex</strong> if for any two points 
+                    \(x, y \in C\) and any \(\theta\) with \(0 \leq \theta \leq 1\), the point
+                </p>
+                <p style="text-align: center; margin: 1rem 0;">
+                    \[\theta x + (1-\theta)y \in C\]
+                </p>
+                <p>
+                    In other words, a set is convex if the line segment connecting any two points in the set 
+                    lies entirely within the set.
+                </p>
+            </div>
+
+            <h3>Intuitive Understanding</h3>
+            <p>
+                Imagine drawing a straight line between any two points in a shape. If that line always stays 
+                inside the shape (no matter which two points you choose), then the shape is convex. If the line 
+                ever goes outside the shape, it's not convex.
+            </p>
+
+            <div class="diagram-placeholder">
+                <p>Diagram: Visual comparison of convex vs non-convex sets</p>
+                <p>(Illustration showing a circle/rectangle as convex and a crescent/star as non-convex)</p>
+            </div>
+
+            <h3>Example: The Unit Ball</h3>
+            
+            <div class="example">
+                <h4>Example 1: Unit Ball in \(\mathbb{R}^2\)</h4>
+                <p>
+                    Consider the unit ball (disk) in two dimensions:
+                </p>
+                <p style="text-align: center; margin: 1rem 0;">
+                    \[C = \{(x_1, x_2) \in \mathbb{R}^2 : x_1^2 + x_2^2 \leq 1\}\]
+                </p>
+                <p>
+                    This set is convex. To see why, take any two points \((x_1, x_2)\) and \((y_1, y_2)\) 
+                    in the unit ball, meaning \(x_1^2 + x_2^2 \leq 1\) and \(y_1^2 + y_2^2 \leq 1\).
+                </p>
+                <p>
+                    For any \(0 \leq \theta \leq 1\), consider the point:
+                </p>
+                <p style="text-align: center; margin: 1rem 0;">
+                    \[z = \theta(x_1, x_2) + (1-\theta)(y_1, y_2)\]
+                </p>
+                <p>
+                    Using the triangle inequality and properties of norms, we can show that 
+                    \(\|z\|_2 \leq \theta\|x\|_2 + (1-\theta)\|y\|_2 \leq 1\), which means \(z\) is also 
+                    in the unit ball. Therefore, the unit ball is convex.
+                </p>
+            </div>
+
+            <div class="diagram-placeholder">
+                <p>Diagram: Unit ball with two points and line segment connecting them</p>
+                <p>(Illustration showing a circle with points and a line segment entirely within the circle)</p>
+            </div>
+
+            <h3>Properties of Convex Sets</h3>
+            <p>
+                Convex sets have several important properties that make them useful in optimization:
+            </p>
+            <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">The intersection of convex sets is convex</li>
+                <li style="margin-bottom: 0.5rem;">Any affine transformation of a convex set is convex</li>
+                <li style="margin-bottom: 0.5rem;">The sum (Minkowski sum) of convex sets is convex</li>
+                <li style="margin-bottom: 0.5rem;">A local minimum in a convex set is also a global minimum</li>
+            </ul>
+
+            <h3>Common Examples</h3>
+            <p>
+                Here are some common examples of convex sets:
+            </p>
+            <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><strong>Hyperplanes:</strong> \(\{x : a^T x = b\}\)</li>
+                <li style="margin-bottom: 0.5rem;"><strong>Halfspaces:</strong> \(\{x : a^T x \leq b\}\)</li>
+                <li style="margin-bottom: 0.5rem;"><strong>Balls:</strong> \(\{x : \|x - x_0\| \leq r\}\)</li>
+                <li style="margin-bottom: 0.5rem;"><strong>Polyhedra:</strong> \(\{x : Ax \leq b\}\)</li>
+                <li style="margin-bottom: 0.5rem;"><strong>Ellipsoids:</strong> \(\{x : (x-x_0)^T P^{-1} (x-x_0) \leq 1\}\) where \(P\) is positive definite</li>
+            </ul>
+        </section>
+
+        <section id="next-steps">
+            <h2>Next Steps</h2>
+            <p>
+                Now that you understand convex sets, the next topics to explore include:
+            </p>
+            <ul style="margin-left: 2rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Convex Functions (Coming Soon)</li>
+                <li style="margin-bottom: 0.5rem;">Convex Optimization Problems (Coming Soon)</li>
+                <li style="margin-bottom: 0.5rem;">Algorithms for Convex Optimization (Coming Soon)</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+</body>
+</html>
