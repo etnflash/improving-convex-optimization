@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn about convex functions with intuition, formal definitions, examples, and a simple interactive demo.">
+    <title>Convex Functions – Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- MathJax for rendering mathematical equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Convex Functions</h1>
+            <p>“Bowl-shaped” functions where every local minimum is a global minimum.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Intuition Section -->
+        <section id="intuition">
+            <h2>Intuition</h2>
+            <p>
+                A convex function is one whose graph curves “upwards” like a bowl.
+                If you pick any two points on the graph of the function and connect them
+                with a straight line segment, the graph always lies <em>below</em>
+                or <em>on</em> that line segment.
+            </p>
+
+            <div class="diagram-placeholder">
+                    <svg viewBox="0 0 260 140" aria-label="Convex and non-convex functions with chords">
+                      <!-- Left: convex -->
+                      <text x="70" y="16" text-anchor="middle"
+                          style="font-size:12px; fill:#2d3748;">Convex</text>
+                      <!-- Right: non-convex -->
+                      <text x="190" y="16" text-anchor="middle"
+                          style="font-size:12px; fill:#2d3748;">Non-convex</text>
+
+                      <!-- Axes for left plot -->
+                      <line x1="20" y1="110" x2="120" y2="110"
+                          style="stroke:#a0aec0; stroke-width:1;" />
+                      <line x1="40" y1="125" x2="40" y2="35"
+                          style="stroke:#a0aec0; stroke-width:1;" />
+
+                      <!-- Convex curve (bowl) -->
+                      <path d="M30,80 Q70,140 110,80"
+                          style="fill:none; stroke:#3182ce; stroke-width:2;" />
+
+                      <!-- Chord between two points on convex curve -->
+                      <circle cx="50" cy="101" r="3" style="fill:#2b6cb0;" />
+                      <circle cx="90" cy="101" r="3" style="fill:#2b6cb0;" />
+                      <line x1="50" y1="101" x2="90" y2="101"
+                          style="stroke:#2b6cb0; stroke-width:1.5;" />
+
+                      <!-- Axes for right plot -->
+                      <line x1="140" y1="110" x2="240" y2="110"
+                          style="stroke:#a0aec0; stroke-width:1;" />
+                      <line x1="160" y1="125" x2="160" y2="35"
+                          style="stroke:#a0aec0; stroke-width:1;" />
+
+                      <!-- Non-convex curve (bump above chord) -->
+                      <path d="M145,95 Q180,40 215,95 T245,100"
+                          style="fill:none; stroke:#e53e3e; stroke-width:2;" />
+
+                      <!-- Chord for non-convex curve -->
+                      <circle cx="145" cy="95" r="3" style="fill:#c53030;" />
+                      <circle cx="215" cy="95" r="3" style="fill:#c53030;" />
+                      <line x1="145" y1="95" x2="215" y2="95"
+                          style="stroke:#c53030; stroke-width:1.5;" />
+                    </svg>
+
+                    <p class="diagram-caption">
+                      For a convex function (left), the graph always lies below the chord between any two points.
+                      For a non-convex function (right), part of the curve can rise above the chord.
+                    </p>
+            </div>
+
+            <p>
+                This “no bump above the chord” intuition is exactly what the formal definition
+                of a convex function captures.
+            </p>
+        </section>
+
+        <!-- Formal Definition Section -->
+        <section id="definition">
+            <h2>Formal Definition</h2>
+
+            <div class="definition">
+                <h4>Definition (Convex Function)</h4>
+                <p>
+                    Let \( C \subseteq \mathbb{R}^n \) be a convex set.
+                    A function \( f : C \to \mathbb{R} \) is called <strong>convex</strong> if
+                    for all \( x, y \in C \) and all \( \theta \in [0,1] \),
+                </p>
+                <p style="text-align: center; margin: 1rem 0;">
+                    \[
+                        f(\theta x + (1-\theta)y)
+                        \leq
+                        \theta f(x) + (1-\theta) f(y).
+                    \]
+                </p>
+                <p>
+                    Geometrically, this means that the value of the function at the point
+                    \( \theta x + (1-\theta)y \) lies below the straight-line interpolation
+                    between \( f(x) \) and \( f(y) \).
+                </p>
+            </div>
+
+            <div class="diagram-placeholder">
+                    <svg viewBox="0 0 260 140" aria-label="Epigraph of a convex function">
+                        <!-- Axes -->
+                        <line x1="30" y1="115" x2="230" y2="115"
+                              style="stroke:#a0aec0; stroke-width:1;" />
+                        <line x1="50" y1="125" x2="50" y2="35"
+                              style="stroke:#a0aec0; stroke-width:1;" />
+
+                        <!-- Convex function curve -->
+                          <path id="convex-curve"
+                              d="M40,90 Q140,130 230,90"
+                              style="fill:none; stroke:#3182ce; stroke-width:2;" />
+
+                        <!-- Epigraph region (above curve) -->
+                        <path d="
+                            M40,90
+                            Q140,130 230,90
+                            L230,35
+                            L40,35
+                            Z"
+                            style="fill:#ebf8ff; opacity:0.7;" />
+
+                        <!-- Label -->
+                        <text x="160" y="50"
+                              style="font-size:12px; fill:#2c5282;">
+                            epigraph of f
+                        </text>
+                    </svg>
+
+                    <p class="diagram-caption">
+                        The epigraph of a convex function (the region above its graph) is a convex set.
+                        This geometric viewpoint is often useful in convex analysis.
+                    </p>
+            </div>
+        </section>
+
+        <!-- Examples Section -->
+        <section id="examples">
+            <h2>Examples and Non-examples</h2>
+
+            <div class="example">
+                <h4>Common Convex Functions</h4>
+                <ul style="margin-left: 1.5rem;">
+                    <li>Quadratic: \( f(x) = x^2 \) on \( \mathbb{R} \)</li>
+                    <li>Absolute value: \( f(x) = |x| \) on \( \mathbb{R} \)</li>
+                    <li>Norms: \( f(x) = \|x\|_2 \) or \( f(x) = \|x\|_1 \) on \( \mathbb{R}^n \)</li>
+                    <li>Maximum of linear functions: \( f(x) = \max_i (a_i^\top x + b_i) \)</li>
+                    <li>Exponential: \( f(x) = e^x \) on \( \mathbb{R} \)</li>
+                </ul>
+            </div>
+
+            <div class="example">
+                <h4>Non-convex Functions</h4>
+                <ul style="margin-left: 1.5rem;">
+                    <li>Oscillating functions such as \( f(x) = \sin x \)</li>
+                    <li>“Double well” shapes such as \( f(x) = x^4 - x^2 \)</li>
+                    <li>Most neural network loss landscapes (before any convex relaxation)</li>
+                </ul>
+                <p>
+                    For these functions, you can find points \( x \) and \( y \) and some
+                    \( \theta \in (0,1) \) such that
+                    \( f(\theta x + (1-\theta)y) > \theta f(x) + (1-\theta)f(y) \).
+                </p>
+            </div>
+        </section>
+
+        <!-- Interactive Demo Section -->
+        <section id="convex-inequality-demo">
+            <h2>Interactive: Convexity Inequality</h2>
+            <p>
+                Here we illustrate the definition of convexity for the simple function
+                \( f(x) = x^2 \). We fix two points \( x = -1 \) and \( y = 2 \),
+                and let you choose \( \theta \in [0,1] \). We then compare
+                \( f(\theta x + (1-\theta)y) \) with
+                \( \theta f(x) + (1-\theta) f(y) \).
+            </p>
+
+            <div class="example">
+                <label for="theta-range">
+                    Choose \( \theta \in [0,1] \):
+                </label>
+                <input type="range" id="theta-range" min="0" max="1" step="0.05" value="0.5">
+
+                <p id="theta-value" style="margin-top: 1rem;"></p>
+                <p id="z-value"></p>
+                <p id="fz-value"></p>
+                <p id="convex-ineq"></p>
+            </div>
+
+            <p>
+                For a convex function, you should always see
+                \( f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta)f(y) \).
+                This simple numeric demo matches the formal definition above.
+            </p>
+        </section>
+
+        <!-- Next Steps Section -->
+        <section id="next-steps">
+            <h2>Next Steps</h2>
+            <p>
+                Convex functions are central objects in convex optimization. In later topics,
+                we will see:
+            </p>
+            <ul style="margin-left: 1.5rem;">
+                <li>Subgradients and first-order characterizations of convexity</li>
+                <li>Jensen's inequality and expectations of convex functions</li>
+                <li>Convex optimization problems built from convex functions and convex sets</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <!-- Interactive script -->
+    <script src="../scripts/convex_functions.js"></script>
+</body>
+</html>

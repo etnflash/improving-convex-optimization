@@ -17,7 +17,7 @@
             <div class="logo">Convex Optimization</div>
             <ul>
                 <li><a href="../index.html">Home</a></li>
-                <li><a href="convexity.html">Topics</a></li>
+                <li><a href="index.html">Topics</a></li>
                 <li><a href="../index.html#about">About</a></li>
             </ul>
         </div>
@@ -65,8 +65,32 @@
             </p>
 
             <div class="diagram-placeholder">
-                <p>Diagram: Visual comparison of convex vs non-convex sets</p>
-                <p>(Illustration showing a circle/rectangle as convex and a crescent/star as non-convex)</p>
+                <svg viewBox="0 0 260 120" aria-label="Convex vs non-convex sets">
+                    <!-- Convex label -->
+                    <text x="55" y="18" text-anchor="middle"
+                          style="font-size:12px; fill:#2d3748;">Convex</text>
+                    <!-- Non-convex label -->
+                    <text x="205" y="18" text-anchor="middle"
+                          style="font-size:12px; fill:#2d3748;">Non-convex</text>
+
+                    <!-- Convex set: filled disk -->
+                    <circle cx="55" cy="70" r="30"
+                            style="fill:#ebf8ff; stroke:#3182ce; stroke-width:2;" />
+
+                    <!-- Non-convex set: “crescent” shape -->
+                    <path d="M175,40
+                             Q205,20 230,40
+                             Q240,60 230,80
+                             Q205,100 175,80
+                             Q195,70 195,55
+                             Q195,45 175,40 Z"
+                          style="fill:#fed7e2; stroke:#d53f8c; stroke-width:2;" />
+                </svg>
+
+                <p class="diagram-caption">
+                    Left: a convex set (disk). Right: a non-convex set (crescent shape) where
+                    some line segments between points leave the set.
+                </p>
             </div>
 
             <h3>Example: The Unit Ball</h3>
@@ -97,8 +121,30 @@
             </div>
 
             <div class="diagram-placeholder">
-                <p>Diagram: Unit ball with two points and line segment connecting them</p>
-                <p>(Illustration showing a circle with points and a line segment entirely within the circle)</p>
+                <svg viewBox="0 0 240 120" aria-label="Unit ball with two points and a line segment">
+                    <!-- Circle = unit ball -->
+                    <circle cx="120" cy="60" r="40"
+                            style="fill:#f0fff4; stroke:#38a169; stroke-width:2;" />
+
+                    <!-- Two points on / inside the ball -->
+                    <circle cx="95" cy="45" r="3"
+                            style="fill:#2b6cb0;" />
+                    <circle cx="145" cy="75" r="3"
+                            style="fill:#2b6cb0;" />
+
+                    <!-- Line segment between the two points -->
+                    <line x1="95" y1="45" x2="145" y2="75"
+                          style="stroke:#2b6cb0; stroke-width:2;" />
+
+                    <!-- Labels x, y -->
+                    <text x="90" y="40" style="font-size:11px; fill:#2d3748;">x</text>
+                    <text x="150" y="80" style="font-size:11px; fill:#2d3748;">y</text>
+                </svg>
+
+                <p class="diagram-caption">
+                    Any two points in the unit ball can be joined by a line segment that stays entirely inside the ball,
+                    so the set is convex.
+                </p>
             </div>
 
             <h3>Properties of Convex Sets</h3>

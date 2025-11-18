@@ -205,3 +205,82 @@ footer {
         padding: 0 10px;
     }
 }
+
+.diagram-placeholder {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 1.25rem;
+    border: 1px solid #e2e8f0;
+    margin: 1.5rem 0;
+}
+
+.diagram-placeholder svg {
+    width: 100%;
+    max-width: 420px;
+    display: block;
+    margin: 0 auto;
+}
+
+.diagram-caption {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    color: #4a5568;
+    text-align: center;
+}
+
+/* Topics Landing Page */
+.topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.topic-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.topic-card h3 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+.topic-card p {
+    margin: 0;
+}
+
+.topic-card .status-badge {
+    align-self: flex-start;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-live {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.status-coming {
+    background: #fefcbf;
+    color: #744210;
+}
+
+.topic-card a {
+    margin-top: auto;
+    color: #3182ce;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.topic-card a:hover {
+    text-decoration: underline;
+}
