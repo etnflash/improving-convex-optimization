@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bring convex sets and convex functions together to form full optimization problems.">
+    <title>Convex Optimization Problems – Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- MathJax for rendering mathematical equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Convex Optimization Problems</h1>
+            <p>Combine convex objectives and convex feasible regions to guarantee tractable solutions.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Why Convex Problems Matter</h2>
+            <p>
+                Once you know what convex sets and convex functions look like, the next step is to pose
+                optimization problems whose feasible region is convex and whose objective is convex. These
+                two ingredients ensure that every local minimum is a global minimum and that efficient
+                algorithms exist to find it.
+            </p>
+            <div class="diagram-placeholder">
+                <svg viewBox="0 0 260 150" aria-label="Feasible set with optimal point">
+                    <polygon points="50,120 30,70 80,40 150,60 200,110"
+                             style="fill:#ebf8ff; stroke:#3182ce; stroke-width:2;" />
+                    <circle cx="120" cy="85" r="4" style="fill:#2b6cb0;" />
+                    <line x1="180" y1="30" x2="120" y2="85"
+                          style="stroke:#d53f8c; stroke-width:2; marker-end:url(#arrowhead);" />
+                    <text x="185" y="28" style="font-size:11px; fill:#d53f8c;">-∇f(x)</text>
+                    <defs>
+                        <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="0" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L6,3 z" fill="#d53f8c" />
+                        </marker>
+                    </defs>
+                </svg>
+                <p class="diagram-caption">
+                    A convex feasible polytope with a single optimal point. Any descent direction eventually
+                    runs into the boundary where the optimum lives.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Standard Problem Forms</h2>
+            <p>
+                Many convex problems can be written in the template
+            </p>
+            <p style="text-align:center; margin:1rem 0;">
+                \[\begin{aligned}
+                    \text{minimize} &\quad f_0(x) \\
+                    \text{subject to} &\quad f_i(x) \le 0, \quad i=1,\dots,m, \\
+                                    &\quad A x = b,
+                \end{aligned}\]
+            </p>
+            <p>
+                where each inequality constraint function \(f_i\) is convex and the equality constraints
+                describe an affine subspace. Special cases include quadratic programs, second-order cone
+                programs, and linear programs.
+            </p>
+        </section>
+
+        <section>
+            <h2>Feasible Sets and Objective Contours</h2>
+            <p>
+                Visualizing convex problems often involves the feasible region plus level sets of the
+                objective. The optimum occurs where the lowest contour touches the feasible set.
+            </p>
+            <div class="diagram-placeholder">
+                <svg viewBox="0 0 260 160" aria-label="Objective contours over feasible disk">
+                    <circle cx="120" cy="90" r="55"
+                            style="fill:#f0fff4; stroke:#38a169; stroke-width:2;" />
+                    <path d="M40,150 q80,-120 180,-20"
+                          style="fill:none; stroke:#eb6a47; stroke-width:2;" />
+                    <path d="M60,150 q80,-120 180,-20"
+                          style="fill:none; stroke:#f6ad55; stroke-width:2;" />
+                    <path d="M80,150 q80,-120 180,-20"
+                          style="fill:none; stroke:#fbd38d; stroke-width:2;" />
+                    <circle cx="135" cy="100" r="4" style="fill:#2b6cb0;" />
+                    <text x="145" y="105" style="font-size:11px; fill:#2d3748;">x*</text>
+                </svg>
+                <p class="diagram-caption">
+                    Optimal point \(x^*\) sits on the lowest objective contour that still intersects the
+                    feasible disk.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Example Problems</h2>
+            <div class="example">
+                <h4>Least-Squares with L1 Regularization</h4>
+                <p>
+                    \(\min_x \frac{1}{2}\|Ax-b\|_2^2 + \lambda \|x\|_1\). Convex because the squared
+                    norm and the \(\ell_1\) norm are convex; often solved with proximal gradient methods.
+                </p>
+            </div>
+            <div class="example">
+                <h4>Portfolio Allocation</h4>
+                <p>
+                    \(\min_x x^T \Sigma x - \mu^T x\) subject to \(\mathbf{1}^T x = 1,\; x \ge 0\).
+                    Quadratic objective + affine and inequality constraints make this a convex quadratic program.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;">Practice constrained first-order methods with <a href="projected-gradient-descent.html">Projected Gradient Descent</a>.</li>
+                <li style="margin-bottom:0.5rem;">Model LP/QP/SOCP/SDP families in <a href="conic-optimization.html">Conic Optimization</a>.</li>
+                <li style="margin-bottom:0.5rem;">Study model-selection behavior using <a href="regularization-paths.html">Regularization Paths</a>.</li>
+                <li style="margin-bottom:0.5rem;">Explore first-order optimality conditions (gradients &amp; subgradients).</li>
+                <li style="margin-bottom:0.5rem;">Study duality to relate primal and dual convex programs in <a href="algorithms-duality.html">Algorithms &amp; Duality</a>.</li>
+                <li style="margin-bottom:0.5rem;">Prototype algorithms like projected gradient or interior-point methods.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+</body>
+</html>

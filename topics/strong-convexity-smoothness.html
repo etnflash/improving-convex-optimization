@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Understand strong convexity, smoothness, and condition numbers in convex optimization.">
+    <title>Strong Convexity and Smoothness - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Strong Convexity and Smoothness</h1>
+            <p>Use curvature bounds and condition numbers to predict first-order convergence behavior.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Curvature Bounds</h2>
+            <p>
+                A differentiable function is <strong>\(\mu\)-strongly convex</strong> if
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[f(y) \ge f(x) + \nabla f(x)^T(y-x) + \frac{\mu}{2}\|y-x\|_2^2.\]
+            </p>
+            <p>
+                It is <strong>\(L\)-smooth</strong> if
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\|\nabla f(y)-\nabla f(x)\|_2 \le L\|y-x\|_2.\]
+            </p>
+            <p>
+                Together, these inequalities pin down how flat or sharp the objective can be.
+            </p>
+        </section>
+
+        <section>
+            <h2>Condition Number</h2>
+            <p>
+                The ratio
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\kappa = \frac{L}{\mu}\]
+            </p>
+            <p>
+                controls optimization difficulty. Small \(\kappa\) means nearly spherical level sets;
+                large \(\kappa\) means elongated valleys and slower gradient progress.
+            </p>
+        </section>
+
+        <section>
+            <h2>Quadratic Model Intuition</h2>
+            <p>
+                For \(f(x)=\tfrac{1}{2}x^TAx\) with \(A\succ 0\),
+                \(\mu=\lambda_{\min}(A)\), \(L=\lambda_{\max}(A)\), and
+                \(\kappa=\lambda_{\max}/\lambda_{\min}\).
+                This links geometry directly to eigenvalues.
+            </p>
+            <div class="example">
+                <h4>Practical Reading</h4>
+                <p>
+                    Preconditioning often tries to reduce effective \(\kappa\), transforming a narrow valley into a rounder landscape.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Rate Snapshot</h2>
+            <p>
+                For gradient descent with the tuned step size \(\alpha = 2/(L+\mu)\), one obtains
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\|x_{k+1}-x^*\|_2 \le \frac{\kappa-1}{\kappa+1}\|x_k-x^*\|_2.\]
+            </p>
+            <p>
+                The contraction factor gets worse as \(\kappa\) increases.
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: Condition Number vs Convergence</h2>
+            <p>
+                We run gradient descent on a 2D quadratic with \(\mu=1\), \(L=\kappa\), and tuned step size.
+                Compare objective decay as you increase the condition number.
+            </p>
+
+            <div class="example">
+                <label for="sc-kappa-range">Condition number \(\kappa\):</label>
+                <input type="range" id="sc-kappa-range" min="1" max="80" step="1" value="12">
+
+                <label for="sc-steps-range" style="display:block; margin-top:0.8rem;">Iterations:</label>
+                <input type="range" id="sc-steps-range" min="5" max="160" step="5" value="80">
+
+                <label for="sc-x0-range" style="display:block; margin-top:0.8rem;">Initial distance scale:</label>
+                <input type="range" id="sc-x0-range" min="0.5" max="3" step="0.1" value="2.0">
+
+                <p id="sc-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Objective Decay</h4>
+                    <canvas id="strongConvexityCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Diagnostics</h4>
+                    <pre id="strongConvexityMetrics" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run the demo to populate diagnostics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runStrongConvexityBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">Run Simulation</button>
+                <button id="resetStrongConvexityBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="accelerated-gradient-methods.html" style="color: #3498db; text-decoration: none;">See how acceleration leverages smoothness and condition numbers</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="projected-gradient-descent.html" style="color: #3498db; text-decoration: none;">Apply curvature intuition to constrained gradient methods</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="optimization-diagnostics.html" style="color: #3498db; text-decoration: none;">Monitor objective and stationarity metrics together</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/strong_convexity_demo.js"></script>
+</body>
+</html>

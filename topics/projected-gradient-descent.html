@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn projected gradient descent for constrained convex optimization.">
+    <title>Projected Gradient Descent - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Projected Gradient Descent</h1>
+            <p>Handle convex constraints by alternating gradient steps with projection back to the feasible set.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Constrained Problem Setup</h2>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_{x \in C} f(x),\]
+            </p>
+            <p>
+                where \(f\) is convex and differentiable, and \(C\) is a closed convex feasible set.
+                A plain gradient step can leave \(C\), so we correct it with projection.
+            </p>
+        </section>
+
+        <section>
+            <h2>Core Update Rule</h2>
+            <p>
+                Define Euclidean projection
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\Pi_C(v)=\arg\min_{x\in C} \|x-v\|_2.\]
+            </p>
+            <p>
+                Projected gradient descent (PGD) iteration:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[x_{k+1}=\Pi_C\left(x_k-\alpha_k\nabla f(x_k)\right).\]
+            </p>
+            <pre class="algorithm-code">
+repeat
+    y_k = x_k - alpha_k * grad_f(x_k)
+    x_{k+1} = projection_C(y_k)
+until stopping criterion
+            </pre>
+        </section>
+
+        <section>
+            <h2>Geometric Intuition</h2>
+            <p>
+                The gradient step improves the objective locally. Projection then picks the closest feasible
+                point, preserving progress while respecting constraints. For convex \(C\), this projection is unique.
+            </p>
+        </section>
+
+        <section>
+            <h2>Example: Box Constraints</h2>
+            <p>
+                If \(C=[-\rho,\rho]^n\), projection is coordinate-wise clipping:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\Pi_C(v)_i = \max(-\rho,\min(\rho,v_i)).\]
+            </p>
+            <div class="example">
+                <h4>Practical Benefit</h4>
+                <p>
+                    Cheap projection enables scalable optimization for large-dimensional bounded models.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Step-size Choices</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Fixed \(\alpha\): works with known smoothness constants.</li>
+                <li style="margin-bottom: 0.5rem;">Backtracking line search: adaptive and robust in practice.</li>
+                <li style="margin-bottom: 0.5rem;">Diminishing \(\alpha_k\): common in subgradient-like settings.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Convergence Snapshot</h2>
+            <p>
+                For convex \(f\) with \(L\)-Lipschitz gradient and constant \(\alpha \in (0,2/L)\), PGD converges.
+                Strong convexity gives linear rates under standard assumptions.
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: 2D PGD on a Box Constraint</h2>
+            <p>
+                We minimize \(f(x)=\tfrac{1}{2}\|x-d\|_2^2\) with \(d=(2.5,2.0)\) under
+                \(C=[-1.5,1.5]^2\). Click run to visualize gradient steps plus projection back into the box.
+            </p>
+
+            <div class="example">
+                <label for="pgd-alpha-range">Step size \(\alpha\):</label>
+                <input type="range" id="pgd-alpha-range" min="0.05" max="0.8" step="0.05" value="0.25">
+
+                <label for="pgd-steps-range" style="display:block; margin-top:0.8rem;">Iterations:</label>
+                <input type="range" id="pgd-steps-range" min="1" max="40" step="1" value="15">
+
+                <label for="pgd-x0x-range" style="display:block; margin-top:0.8rem;">Initial \(x_0\) first coordinate:</label>
+                <input type="range" id="pgd-x0x-range" min="-1.5" max="1.5" step="0.1" value="-1.2">
+
+                <label for="pgd-x0y-range" style="display:block; margin-top:0.8rem;">Initial \(x_0\) second coordinate:</label>
+                <input type="range" id="pgd-x0y-range" min="-1.5" max="1.5" step="0.1" value="-1.0">
+
+                <p id="pgd-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Path Visualization</h4>
+                    <canvas id="pgdCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Iteration Log</h4>
+                    <pre id="pgdMetricsBox" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run the demo to populate metrics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runPgdBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">▶ Run PGD</button>
+                <button id="resetPgdBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">↺ Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Implementation Checklist</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Write a reliable projection routine for your feasible set.</li>
+                <li style="margin-bottom: 0.5rem;">Monitor objective, iterate distance, and feasibility residual.</li>
+                <li style="margin-bottom: 0.5rem;">Compare fixed vs adaptive step sizes.</li>
+                <li style="margin-bottom: 0.5rem;">Use warm starts for repeated similar problems.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="line-search-methods.html" style="color: #3498db; text-decoration: none;">Tune PGD step sizes with Armijo/Wolfe line-search techniques</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="projection-library.html" style="color: #3498db; text-decoration: none;">Build reusable constraint operators in the projection library</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">See PGD in the broader algorithm playbook</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="admm-splitting.html" style="color: #3498db; text-decoration: none;">Compare PGD with splitting methods like ADMM</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="mirror-descent-bregman.html" style="color: #3498db; text-decoration: none;">Explore non-Euclidean alternatives with mirror descent</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/projected_gd_demo.js"></script>
+</body>
+</html>

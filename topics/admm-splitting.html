@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn ADMM for convex optimization with variable splitting and augmented Lagrangians.">
+    <title>ADMM (Alternating Direction Method of Multipliers) - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>ADMM</h1>
+            <p>Split complex convex objectives into simpler subproblems with strong practical scalability.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Problem Form</h2>
+            <p>
+                ADMM targets objectives that can be split into two blocks:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_{x,z} \; f(x) + g(z) \quad \text{subject to } Ax + Bz = c.\]
+            </p>
+            <p>
+                This covers many sparse learning, constrained estimation, and distributed optimization problems.
+            </p>
+        </section>
+
+        <section>
+            <h2>Augmented Lagrangian</h2>
+            <p>
+                ADMM uses the augmented Lagrangian
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\mathcal{L}_\rho(x,z,y) = f(x)+g(z)+y^T(Ax+Bz-c)+\frac{\rho}{2}\|Ax+Bz-c\|_2^2.\]
+            </p>
+            <p>
+                The quadratic penalty stabilizes updates and improves practical convergence behavior.
+            </p>
+        </section>
+
+        <section>
+            <h2>Scaled ADMM Updates</h2>
+            <p>
+                With scaled dual variable \(u=y/\rho\), a common iteration is:
+            </p>
+            <pre class="algorithm-code">
+repeat
+    x^{k+1} = argmin_x f(x) + (rho/2)||Ax + Bz^k - c + u^k||_2^2
+    z^{k+1} = argmin_z g(z) + (rho/2)||Ax^{k+1} + Bz - c + u^k||_2^2
+    u^{k+1} = u^k + Ax^{k+1} + Bz^{k+1} - c
+until residuals are small
+            </pre>
+        </section>
+
+        <section>
+            <h2>Residual Diagnostics</h2>
+            <div class="example">
+                <h4>Stopping Criteria</h4>
+                <p>
+                    Track primal residual \(r^k = Ax^k+Bz^k-c\) and dual residual
+                    \(s^k = \rho A^TB(z^k-z^{k-1})\) (form depends on scaling). Stop when both are below tolerances.
+                </p>
+            </div>
+            <p>
+                Balancing these residuals is often more informative than monitoring objective value alone.
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: ADMM Residual Calculator (Scalar Split)</h2>
+            <p>
+                Use the scalar split constraint \(x-z=c\) (equivalent to \(Ax+Bz=c\) with \(A=1, B=-1\)).
+                Adjust \(x^k, z^k, z^{k-1}, c, \rho\), and inspect primal residual
+                \(r^k=x^k-z^k-c\) and dual residual \(s^k=\rho(z^k-z^{k-1})\).
+            </p>
+            <div class="example">
+                <label for="admm-x-range">Choose \(x^k\):</label>
+                <input type="range" id="admm-x-range" min="-3" max="3" step="0.1" value="1.0">
+
+                <label for="admm-z-range" style="display:block; margin-top:0.8rem;">Choose \(z^k\):</label>
+                <input type="range" id="admm-z-range" min="-3" max="3" step="0.1" value="0.4">
+
+                <label for="admm-zprev-range" style="display:block; margin-top:0.8rem;">Choose \(z^{k-1}\):</label>
+                <input type="range" id="admm-zprev-range" min="-3" max="3" step="0.1" value="0.1">
+
+                <label for="admm-c-range" style="display:block; margin-top:0.8rem;">Choose \(c\):</label>
+                <input type="range" id="admm-c-range" min="-2" max="2" step="0.1" value="0">
+
+                <label for="admm-rho-range" style="display:block; margin-top:0.8rem;">Choose \(\rho\):</label>
+                <input type="range" id="admm-rho-range" min="0.1" max="5" step="0.1" value="1.0">
+
+                <p id="admm-params-display" style="margin-top:1rem;"></p>
+                <p id="admm-primal-display"></p>
+                <p id="admm-dual-display"></p>
+                <p id="admm-norms-display"></p>
+                <p id="admm-status-display"></p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Worked Template: Lasso via Splitting</h2>
+            <p>
+                Lasso can be written as
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_{x,z} \frac{1}{2}\|Ax-b\|_2^2 + \lambda\|z\|_1 \quad \text{s.t. } x-z=0.\]
+            </p>
+            <p>
+                Then ADMM alternates a ridge-like \(x\)-update, soft-thresholding \(z\)-update,
+                and a simple dual ascent step.
+            </p>
+        </section>
+
+        <section>
+            <h2>When ADMM Works Well</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Each block subproblem is easy or has a closed form prox.</li>
+                <li style="margin-bottom: 0.5rem;">Data and variables can be split across machines.</li>
+                <li style="margin-bottom: 0.5rem;">You need robust behavior on large sparse problems.</li>
+                <li style="margin-bottom: 0.5rem;">Primal-dual residual monitoring is natural for your constraints.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="primal-dual-methods.html" style="color: #3498db; text-decoration: none;">Compare ADMM with PDHG in the Primal-Dual Methods module</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="proximal-operators-moreau.html" style="color: #3498db; text-decoration: none;">Review proximal operators used in ADMM substeps</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="conjugate-fenchel-duality.html" style="color: #3498db; text-decoration: none;">Connect ADMM splitting to dual formulations</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">Place ADMM in the broader algorithm landscape</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/admm_demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn Jensen's inequality and how convexity interacts with expectation and averaging.">
+    <title>Jensen's Inequality - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Jensen's Inequality</h1>
+            <p>Convexity turns averaging into a powerful bound for optimization and machine learning.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Statement</h2>
+            <div class="definition">
+                <h4>Jensen's Inequality</h4>
+                <p>
+                    If \(f\) is convex and \(X\) is an integrable random variable, then
+                </p>
+                <p style="text-align:center; margin: 1rem 0;">
+                    \[f(\mathbb{E}[X]) \le \mathbb{E}[f(X)].\]
+                </p>
+                <p>
+                    For discrete weights \(\theta_i \ge 0\), \(\sum_i \theta_i = 1\), this is equivalently
+                </p>
+                <p style="text-align:center; margin: 1rem 0;">
+                    \[f\!\left(\sum_{i=1}^m \theta_i x_i\right) \le \sum_{i=1}^m \theta_i f(x_i).\]
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Intuition</h2>
+            <p>
+                Convex functions curve upward. Taking an average input first and then evaluating \(f\)
+                gives a value below evaluating \(f\) at each point and averaging afterward.
+            </p>
+            <div class="example">
+                <h4>One-line Memory Hook</h4>
+                <p>
+                    For convex \(f\): function of average is less than or equal to average of function.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Example 1: Quadratic Function</h2>
+            <p>
+                Let \(f(x)=x^2\), \(X\in\{-1,2\}\) with equal probability. Then
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\mathbb{E}[X]=0.5,\quad f(\mathbb{E}[X])=0.25.\]
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\mathbb{E}[f(X)] = \tfrac{1}{2}(1+4)=2.5.\]
+            </p>
+            <p>
+                So \(0.25 \le 2.5\), exactly matching Jensen's inequality.
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: Jensen Check with Two-Point Distribution</h2>
+            <p>
+                Choose two support points \(x_1, x_2\) and weight \(\theta\in[0,1]\). We use
+                \(f(x)=x^2\), compute
+                \(f(\theta x_1+(1-\theta)x_2)\) and
+                \(\theta f(x_1)+(1-\theta)f(x_2)\), and verify Jensen numerically.
+            </p>
+            <div class="example">
+                <label for="jensen-x1-range">Choose \(x_1\):</label>
+                <input type="range" id="jensen-x1-range" min="-3" max="3" step="0.1" value="-1">
+
+                <label for="jensen-x2-range" style="display:block; margin-top:0.8rem;">Choose \(x_2\):</label>
+                <input type="range" id="jensen-x2-range" min="-3" max="3" step="0.1" value="2">
+
+                <label for="jensen-theta-range" style="display:block; margin-top:0.8rem;">Choose \(\theta\):</label>
+                <input type="range" id="jensen-theta-range" min="0" max="1" step="0.05" value="0.5">
+
+                <p id="jensen-params-display" style="margin-top:1rem;"></p>
+                <p id="jensen-ex-display"></p>
+                <p id="jensen-lhs-display"></p>
+                <p id="jensen-rhs-display"></p>
+                <p id="jensen-result-display"></p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Example 2: Why Variance is Nonnegative</h2>
+            <p>
+                Using \(f(x)=x^2\), Jensen gives
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[(\mathbb{E}[X])^2 \le \mathbb{E}[X^2].\]
+            </p>
+            <p>
+                Rearranging yields
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\operatorname{Var}(X)=\mathbb{E}[X^2]-(\mathbb{E}[X])^2 \ge 0.\]
+            </p>
+            <p>
+                This is a classic and useful consequence that appears constantly in optimization and statistics.
+            </p>
+        </section>
+
+        <section>
+            <h2>Optimization Connections</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Risk minimization: expected loss bounds from convex surrogates.</li>
+                <li style="margin-bottom: 0.5rem;">Mini-batch training: average-gradient and average-loss reasoning.</li>
+                <li style="margin-bottom: 0.5rem;">Convex relaxations: expectation-based upper and lower bounds.</li>
+                <li style="margin-bottom: 0.5rem;">Subgradient methods: links between averaging iterates and guarantees.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Practice Prompts</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Show \(\log(\mathbb{E}[X]) \ge \mathbb{E}[\log X]\) for \(X>0\) from concavity of \(\log\).</li>
+                <li style="margin-bottom: 0.5rem;">Use Jensen with \(f(x)=e^x\) to prove \(e^{\mathbb{E}[X]} \le \mathbb{E}[e^X]\).</li>
+                <li style="margin-bottom: 0.5rem;">Explain when equality holds (for example, when \(X\) is almost surely constant).</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="subgradients-optimality.html" style="color: #3498db; text-decoration: none;">Review subgradients and first-order optimality</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="convex-optimization.html" style="color: #3498db; text-decoration: none;">Apply Jensen intuition to convex optimization models</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">See how averaging appears in algorithm design</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/jensens_demo.js"></script>
+</body>
+</html>

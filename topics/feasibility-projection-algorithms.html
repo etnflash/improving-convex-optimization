@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn POCS and Dykstra algorithms for convex feasibility via alternating projections.">
+    <title>Feasibility and Projection Algorithms - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Feasibility and Projection Algorithms (POCS / Dykstra)</h1>
+            <p>Find points in intersections of convex sets using repeated projections.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Convex Feasibility Problem</h2>
+            <p>
+                Instead of minimizing an objective, feasibility seeks
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\text{find } x \in C_1 \cap C_2 \cap \cdots \cap C_m.\]
+            </p>
+            <p>
+                Projection-based methods are simple and scalable when each set has an easy projector.
+            </p>
+        </section>
+
+        <section>
+            <h2>POCS: Alternating Projections</h2>
+            <p>
+                For two sets \(A\) and \(B\), POCS iterates
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[x^{k+1}=\Pi_B(\Pi_A(x^k)).\]
+            </p>
+            <p>
+                If \(A\cap B\neq\emptyset\), the sequence approaches a feasible point under standard assumptions.
+            </p>
+            <pre class="algorithm-code">
+repeat
+    x <- projection_A(x)
+    x <- projection_B(x)
+until feasibility residual is small
+            </pre>
+        </section>
+
+        <section>
+            <h2>Dykstra's Algorithm</h2>
+            <p>
+                Dykstra adds correction vectors to recover the projection onto the intersection itself,
+                not just any feasible limit point. For two sets:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\begin{aligned}
+                y^{k+1} &= \Pi_A(x^k + p^k),\quad p^{k+1}=x^k + p^k - y^{k+1},\\
+                x^{k+1} &= \Pi_B(y^{k+1}+q^k),\quad q^{k+1}=y^{k+1}+q^k-x^{k+1}.
+                \end{aligned}\]
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: POCS vs Dykstra</h2>
+            <p>
+                Choose a pair of convex sets and compare trajectories plus intersection-residual trends
+                for POCS and Dykstra.
+            </p>
+
+            <div class="example">
+                <label for="fp-pair-select">Set pair:</label>
+                <select id="fp-pair-select" style="margin-left:0.5rem; padding:0.25rem;">
+                    <option value="halfspace-disk">Halfspace + Disk</option>
+                    <option value="box-affine">Box + Affine Line</option>
+                    <option value="simplex-disk">Simplex + Disk</option>
+                </select>
+
+                <label for="fp-x0x-range">Initial point x0 (first coordinate):</label>
+                <input type="range" id="fp-x0x-range" min="-3" max="3" step="0.1" value="-2.2">
+
+                <label for="fp-x0y-range" style="display:block; margin-top:0.8rem;">Initial point x0 (second coordinate):</label>
+                <input type="range" id="fp-x0y-range" min="-3" max="3" step="0.1" value="2.0">
+
+                <label for="fp-steps-range" style="display:block; margin-top:0.8rem;">Iterations:</label>
+                <input type="range" id="fp-steps-range" min="2" max="80" step="1" value="25">
+
+                <div style="margin-top:0.9rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+                    <button id="fp-preset-a" type="button" style="padding:0.4rem 0.7rem; border:1px solid #94a3b8; border-radius:6px; background:#f8fafc; cursor:pointer;">Preset A</button>
+                    <button id="fp-preset-b" type="button" style="padding:0.4rem 0.7rem; border:1px solid #94a3b8; border-radius:6px; background:#f8fafc; cursor:pointer;">Preset B</button>
+                    <button id="fp-preset-c" type="button" style="padding:0.4rem 0.7rem; border:1px solid #94a3b8; border-radius:6px; background:#f8fafc; cursor:pointer;">Preset C</button>
+                </div>
+
+                <div style="margin-top:0.7rem; display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                    <label for="fp-best-criterion" style="font-weight:600;">Best criterion:</label>
+                    <select id="fp-best-criterion" style="padding:0.25rem; border:1px solid #94a3b8; border-radius:6px;">
+                        <option value="min">min(POCS, Dykstra)</option>
+                        <option value="pocs">POCS residual only</option>
+                        <option value="dykstra">Dykstra residual only</option>
+                    </select>
+                </div>
+
+                <p id="fp-params-display" style="margin-top:1rem;"></p>
+                <p id="fp-best-display" style="margin-top:0.4rem; color:#0f766e; font-weight:600;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Geometry and Trajectories</h4>
+                    <canvas id="fpCanvas" width="520" height="360" style="border:1px solid #ccc; background:#fafafa; border-radius:6px; width:100%; max-width:520px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Diagnostics</h4>
+                    <pre id="fpMetrics" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:360px;">Run the demo to populate diagnostics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runFpBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">Run Comparison</button>
+                <button id="resetFpBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Where This Helps</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;">Signal and image reconstruction with multiple hard constraints.</li>
+                <li style="margin-bottom:0.5rem;">Large feasibility models where projections are cheap but direct solvers are expensive.</li>
+                <li style="margin-bottom:0.5rem;">Warm-starting constrained optimization from feasible points.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;"><a href="projection-library.html" style="color:#3498db; text-decoration:none;">Review reusable projection operators for common convex sets</a></li>
+                <li style="margin-bottom:0.5rem;"><a href="projected-gradient-descent.html" style="color:#3498db; text-decoration:none;">Use feasibility projections inside constrained gradient methods</a></li>
+                <li style="margin-bottom:0.5rem;"><a href="optimization-diagnostics.html" style="color:#3498db; text-decoration:none;">Track feasibility residuals with other stopping metrics</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/feasibility_projection_demo.js"></script>
+</body>
+</html>

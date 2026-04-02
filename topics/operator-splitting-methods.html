@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Understand forward-backward, Douglas-Rachford, and related operator splitting methods.">
+    <title>Operator Splitting Methods - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Operator Splitting Methods</h1>
+            <p>Decompose hard composite problems into simple gradient and proximal sub-operators.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Composite Objective Pattern</h2>
+            <p style="text-align:center; margin:1rem 0;">
+                \[\min_x\; f(x) + g(x),\]
+            </p>
+            <p>
+                with smooth \(f\) and possibly non-smooth \(g\). Splitting applies different updates to each part.
+            </p>
+        </section>
+
+        <section>
+            <h2>Forward-Backward (Prox-Gradient)</h2>
+            <p style="text-align:center; margin:1rem 0;">
+                \[x^{k+1}=\operatorname{prox}_{\alpha g}(x^k-\alpha\nabla f(x^k)).\]
+            </p>
+            <p>
+                A forward (gradient) step for \(f\), then backward (prox) step for \(g\).
+            </p>
+        </section>
+
+        <section>
+            <h2>Douglas-Rachford / ADMM Connection</h2>
+            <p>
+                Reflection-based splitting in dual or product spaces can lead to ADMM-like practical algorithms.
+                This unifies several methods under monotone operator fixed-point perspectives.
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: Splitting Family Behavior</h2>
+            <p>
+                Compare synthetic contraction behavior for Forward-Backward, Douglas-Rachford-style,
+                and a conservative baseline under varying operator conflict level.
+            </p>
+
+            <div class="example">
+                <label for="os-conflict-range">Operator conflict level:</label>
+                <input type="range" id="os-conflict-range" min="0" max="1" step="0.02" value="0.35">
+
+                <label for="os-steps-range" style="display:block; margin-top:0.8rem;">Iterations:</label>
+                <input type="range" id="os-steps-range" min="10" max="250" step="10" value="120">
+
+                <label for="os-scale-range" style="display:block; margin-top:0.8rem;">Initial fixed-point residual:</label>
+                <input type="range" id="os-scale-range" min="0.2" max="5" step="0.1" value="2.0">
+
+                <p id="os-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Residual Curves</h4>
+                    <canvas id="operatorSplittingCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Diagnostics</h4>
+                    <pre id="operatorSplittingMetrics" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run comparison to populate diagnostics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runOperatorSplittingBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">Run Comparison</button>
+                <button id="resetOperatorSplittingBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Worked Example</h2>
+            <div class="example">
+                <h4>Single Forward-Backward Step With L1 Regularization</h4>
+                <p>
+                    Let \(f(x)=\tfrac{1}{2}(x-2)^2\), \(g(x)=\lambda |x|\), \(\lambda=0.4\), \(\alpha=0.5\), and \(x^0=3\).
+                    Gradient step:
+                </p>
+                <p style="text-align:center; margin:1rem 0;">
+                    \[v = x^0-\alpha\nabla f(x^0)=3-0.5(3-2)=2.5.\]
+                </p>
+                <p>
+                    Prox step for \(\alpha g\) is soft-thresholding with threshold \(\alpha\lambda=0.2\):
+                </p>
+                <p style="text-align:center; margin:1rem 0;">
+                    \[x^1 = \operatorname{sign}(v)\max(|v|-0.2,0)=2.3.\]
+                </p>
+                <p>
+                    This illustrates splitting: smooth descent from \(f\), then sparsity-inducing shrinkage from \(g\).
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;"><a href="proximal-operators-moreau.html" style="color:#3498db; text-decoration:none;">Review prox identities behind splitting updates</a></li>
+                <li style="margin-bottom:0.5rem;"><a href="admm-splitting.html" style="color:#3498db; text-decoration:none;">Connect Douglas-Rachford viewpoints to ADMM</a></li>
+                <li style="margin-bottom:0.5rem;"><a href="primal-dual-methods.html" style="color:#3498db; text-decoration:none;">Compare splitting with PDHG-style primal-dual updates</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/operator_splitting_demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn primal-dual first-order methods such as PDHG and Chambolle-Pock.">
+    <title>Primal-Dual Methods - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Primal-Dual Methods (PDHG / Chambolle-Pock)</h1>
+            <p>Update primal and dual variables together to solve structured convex composite objectives efficiently.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Problem Template</h2>
+            <p>
+                Primal-dual methods are especially effective for saddle formulations such as
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_x\; f(x) + g(Kx),\]
+            </p>
+            <p>
+                where \(f\) and \(g\) are convex and proximable, and \(K\) is a linear operator.
+            </p>
+        </section>
+
+        <section>
+            <h2>Saddle-Point View</h2>
+            <p>
+                Introduce dual variable \(y\) via conjugacy:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_x\max_y\; f(x) + \langle Kx,y\rangle - g^*(y).\]
+            </p>
+            <p>
+                Alternating updates on \(x\) and \(y\) produce scalable first-order algorithms with simple proximal substeps.
+            </p>
+        </section>
+
+        <section>
+            <h2>PDHG / Chambolle-Pock Iteration</h2>
+            <p>
+                A common variant is
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\begin{aligned}
+                y^{k+1} &= \operatorname{prox}_{\sigma g^*}(y^k + \sigma K\bar{x}^k),\\
+                x^{k+1} &= \operatorname{prox}_{\tau f}(x^k - \tau K^Ty^{k+1}),\\
+                \bar{x}^{k+1} &= x^{k+1} + \theta(x^{k+1}-x^k).
+                \end{aligned}\]
+            </p>
+            <p>
+                A standard stability condition is \(\tau\sigma\|K\|^2 < 1\).
+            </p>
+            <pre class="algorithm-code">
+repeat
+    y <- prox_{sigma g*}( y + sigma * K * x_bar )
+    x <- prox_{tau f}( x - tau * K^T * y )
+    x_bar <- x + theta * (x - x_prev)
+until residuals are small
+            </pre>
+        </section>
+
+        <section>
+            <h2>What to Monitor</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><strong>Primal residual</strong> for feasibility/prox consistency.</li>
+                <li style="margin-bottom: 0.5rem;"><strong>Dual residual</strong> for stationarity progress.</li>
+                <li style="margin-bottom: 0.5rem;"><strong>Primal-dual gap proxy</strong> for stopping decisions.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Interactive: PDHG Residual Dashboard</h2>
+            <p>
+                This simulation compares stable and unstable step-size regimes under
+                different operator norms. Tune \(\tau\), \(\sigma\), and \(\|K\|\)
+                to observe residual trajectories and a gap-style metric.
+            </p>
+
+            <div class="example">
+                <label for="pdhg-tau-range">Primal step \(\tau\):</label>
+                <input type="range" id="pdhg-tau-range" min="0.02" max="1.2" step="0.02" value="0.35">
+
+                <label for="pdhg-sigma-range" style="display:block; margin-top:0.8rem;">Dual step \(\sigma\):</label>
+                <input type="range" id="pdhg-sigma-range" min="0.02" max="1.2" step="0.02" value="0.35">
+
+                <label for="pdhg-knorm-range" style="display:block; margin-top:0.8rem;">Operator norm \(\|K\|\):</label>
+                <input type="range" id="pdhg-knorm-range" min="0.5" max="3.5" step="0.1" value="1.4">
+
+                <label for="pdhg-steps-range" style="display:block; margin-top:0.8rem;">Iterations:</label>
+                <input type="range" id="pdhg-steps-range" min="10" max="220" step="10" value="120">
+
+                <p id="pdhg-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Residual Trends</h4>
+                    <canvas id="pdhgCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Run Diagnostics</h4>
+                    <pre id="pdhgMetrics" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run the demo to populate metrics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runPdhgBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">Run PDHG Simulation</button>
+                <button id="resetPdhgBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="admm-splitting.html" style="color: #3498db; text-decoration: none;">Compare PDHG with ADMM splitting strategies</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="feasibility-projection-algorithms.html" style="color: #3498db; text-decoration: none;">Use projection-only feasibility methods for constraint warm starts</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="conic-optimization.html" style="color: #3498db; text-decoration: none;">See structured saddle problems through conic formulations</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="optimization-diagnostics.html" style="color: #3498db; text-decoration: none;">Track primal/dual/gap criteria in a unified diagnostics view</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/primal_dual_demo.js"></script>
+</body>
+</html>

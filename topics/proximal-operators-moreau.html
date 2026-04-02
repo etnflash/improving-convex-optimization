@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn proximal operators and the Moreau envelope for non-smooth convex optimization.">
+    <title>Proximal Operators &amp; Moreau Envelope - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Proximal Operators &amp; Moreau Envelope</h1>
+            <p>Solve non-smooth convex problems with stable updates and smooth surrogate geometry.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Why Proximal Methods?</h2>
+            <p>
+                Gradient descent struggles on non-smooth terms such as \(\|x\|_1\) or indicator constraints.
+                Proximal updates replace a difficult function with a local quadratic + exact regularizer solve,
+                giving robust steps for composite objectives.
+            </p>
+            <div class="example">
+                <h4>Composite Template</h4>
+                <p style="text-align:center; margin: 0.8rem 0;">
+                    \[\min_x \; F(x)=f(x)+g(x),\]
+                </p>
+                <p>
+                    where \(f\) is smooth and \(g\) is convex, possibly non-smooth.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Proximal Operator</h2>
+            <div class="definition">
+                <h4>Definition</h4>
+                <p>
+                    For \(\lambda>0\), the proximal map of \(g\) is
+                </p>
+                <p style="text-align:center; margin: 1rem 0;">
+                    \[\operatorname{prox}_{\lambda g}(v)=\arg\min_x\left\{g(x)+\frac{1}{2\lambda}\|x-v\|_2^2\right\}.\]
+                </p>
+                <p>
+                    Intuition: find a point that balances low \(g(x)\) and staying close to \(v\).
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Proximal Gradient Step</h2>
+            <p>
+                For \(F(x)=f(x)+g(x)\), one step with step size \(\alpha\) is
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[x_{k+1}=\operatorname{prox}_{\alpha g}\left(x_k-\alpha\nabla f(x_k)\right).\]
+            </p>
+            <p>
+                This is often called ISTA when \(g=\lambda\|x\|_1\), and accelerated versions lead to FISTA.
+            </p>
+        </section>
+
+        <section>
+            <h2>Classic Example: Soft-Thresholding</h2>
+            <p>
+                For \(g(x)=\lambda\|x\|_1\), the prox is coordinate-wise shrinkage:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\operatorname{prox}_{\alpha\lambda\|\cdot\|_1}(v)_i=
+                \operatorname{sign}(v_i)\max(|v_i|-\alpha\lambda,0).\]
+            </p>
+            <div class="worked-problem">
+                <h4>Why It Matters</h4>
+                <p>
+                    The soft-threshold map is exactly the sparsity mechanism in Lasso and many signal processing models.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Moreau Envelope</h2>
+            <div class="definition">
+                <h4>Smooth Surrogate</h4>
+                <p>
+                    The Moreau envelope of \(g\) with parameter \(\lambda\) is
+                </p>
+                <p style="text-align:center; margin: 1rem 0;">
+                    \[e_{\lambda}g(v)=\min_x\left\{g(x)+\frac{1}{2\lambda}\|x-v\|_2^2\right\}.\]
+                </p>
+                <p>
+                    It smooths \(g\) while preserving minimizers in useful settings.
+                </p>
+            </div>
+            <p>
+                A key relation is
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\nabla e_{\lambda}g(v)=\frac{1}{\lambda}\left(v-\operatorname{prox}_{\lambda g}(v)\right).\]
+            </p>
+            <p>
+                This gives a differentiable handle on originally non-smooth geometry.
+            </p>
+        </section>
+
+        <section>
+            <h2>Moreau Decomposition</h2>
+            <p>
+                Proximal maps of a function and its conjugate are linked by
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[v = \operatorname{prox}_{\lambda g}(v) + \lambda\operatorname{prox}_{g^*/\lambda}(v/\lambda).\]
+            </p>
+            <p>
+                This identity is central in primal-dual splitting and conjugate-based modeling.
+            </p>
+        </section>
+
+        <section>
+            <h2>Practice Checklist</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Derive \(\operatorname{prox}\) for \(\ell_1\), \(\ell_2\), and indicator functions.</li>
+                <li style="margin-bottom: 0.5rem;">Implement one ISTA/FISTA loop for a sparse regression problem.</li>
+                <li style="margin-bottom: 0.5rem;">Use Moreau decomposition to verify conjugate identities numerically.</li>
+                <li style="margin-bottom: 0.5rem;">Compare convergence traces vs subgradient descent.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="mirror-descent-bregman.html" style="color: #3498db; text-decoration: none;">Explore mirror descent and Bregman geometry</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="conjugate-fenchel-duality.html" style="color: #3498db; text-decoration: none;">Connect prox identities with conjugate/Fenchel views</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">Map these ideas to practical solver playbooks</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="convex-optimization.html" style="color: #3498db; text-decoration: none;">Return to convex model classes and constraints</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+</body>
+</html>

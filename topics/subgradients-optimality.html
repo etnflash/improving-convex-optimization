@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn subgradients, subdifferentials, and first-order optimality conditions for convex functions.">
+    <title>Subgradients &amp; Optimality - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Subgradients &amp; Optimality</h1>
+            <p>Handle non-smooth convex functions and certify minimizers with first-order conditions.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Why Subgradients?</h2>
+            <p>
+                Many useful convex objectives are not differentiable everywhere. Examples include
+                absolute value, the L1 norm, hinge loss, and max-of-affine functions. Gradients are
+                unavailable at corners, but subgradients let us keep first-order reasoning and algorithms.
+            </p>
+            <div class="example">
+                <h4>Typical Non-smooth Models</h4>
+                <ul style="margin-left: 1.5rem;">
+                    <li>Lasso: \(\min_x \frac{1}{2}\|Ax-b\|_2^2 + \lambda\|x\|_1\)</li>
+                    <li>Robust regression: \(\min_x \|Ax-b\|_1\)</li>
+                    <li>SVM hinge objective: max-based piecewise linear loss</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Definition: Subgradient and Subdifferential</h2>
+            <div class="definition">
+                <h4>Subgradient</h4>
+                <p>
+                    Let \(f : \mathbb{R}^n \to \mathbb{R}\) be convex. A vector \(g\) is a subgradient of
+                    \(f\) at \(x\) if for every \(y\),
+                </p>
+                <p style="text-align:center; margin: 1rem 0;">
+                    \[f(y) \ge f(x) + g^T(y-x).\]
+                </p>
+                <p>
+                    The set of all such vectors is the subdifferential, denoted \(\partial f(x)\).
+                </p>
+            </div>
+            <p>
+                Geometrically, each subgradient defines a supporting hyperplane that lies below the graph
+                of \(f\) and touches it at \(x\).
+            </p>
+        </section>
+
+        <section>
+            <h2>Core Optimality Condition</h2>
+            <p>
+                For unconstrained convex minimization \(\min_x f(x)\), the first-order condition is:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[x^* \text{ is optimal } \Longleftrightarrow 0 \in \partial f(x^*).\]
+            </p>
+            <p>
+                This extends the smooth rule \(\nabla f(x^*) = 0\). For constrained problems
+                \(\min_{x \in C} f(x)\), an equivalent condition is
+                \(0 \in \partial f(x^*) + N_C(x^*)\), where \(N_C(x^*)\) is the normal cone.
+            </p>
+        </section>
+
+        <section>
+            <h2>Worked Example: \(f(x)=|x|\)</h2>
+            <div class="worked-problem">
+                <h4>Subdifferential of Absolute Value</h4>
+                <p style="text-align:center; margin: 0.8rem 0;">
+                    \[
+                    \partial |x| =
+                    \begin{cases}
+                        \{1\}, & x > 0, \\
+                        [-1,1], & x = 0, \\
+                        \{-1\}, & x < 0.
+                    \end{cases}
+                    \]
+                </p>
+                <p>
+                    Since \(0 \in [-1,1] = \partial |0|\), \(x^*=0\) is optimal. This is the simplest
+                    non-smooth certificate of global optimality.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Worked Example: Soft-Thresholding</h2>
+            <p>
+                Consider one-dimensional L1-regularized least squares:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_x \frac{1}{2}(x-v)^2 + \lambda |x|.\]
+            </p>
+            <p>
+                The optimal solution is the soft-threshold map:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[x^* = \operatorname{sign}(v)\max(|v|-\lambda,0).\]
+            </p>
+            <div class="example">
+                <h4>Interpretation</h4>
+                <p>
+                    Values with \(|v| \le \lambda\) collapse to zero, while larger values are shrunk toward zero.
+                    This is why L1 regularization promotes sparsity.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Interactive: Subgradient Check for \(f(x)=|x|\)</h2>
+            <p>
+                Move the sliders to pick a point \(x\), a candidate subgradient \(g\), and a test point \(y\).
+                Then check whether the subgradient inequality
+                \(|y| \ge |x| + g(y-x)\) holds.
+            </p>
+            <div class="example">
+                <label for="subgrad-x-range">Choose \(x\):</label>
+                <input type="range" id="subgrad-x-range" min="-2" max="2" step="0.1" value="0">
+
+                <label for="subgrad-g-range" style="display:block; margin-top:0.8rem;">Choose candidate \(g\):</label>
+                <input type="range" id="subgrad-g-range" min="-1.5" max="1.5" step="0.1" value="0">
+
+                <label for="subgrad-y-range" style="display:block; margin-top:0.8rem;">Choose test point \(y\):</label>
+                <input type="range" id="subgrad-y-range" min="-2" max="2" step="0.1" value="1">
+
+                <p id="subgrad-x-display" style="margin-top:1rem;"></p>
+                <p id="subgrad-set-display"></p>
+                <p id="subgrad-g-display"></p>
+                <p id="subgrad-valid-display"></p>
+                <p id="subgrad-y-display"></p>
+                <p id="subgrad-ineq-display"></p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Practice Checklist</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Identify where the function is non-smooth.</li>
+                <li style="margin-bottom: 0.5rem;">Write \(\partial f(x)\) explicitly at smooth and corner points.</li>
+                <li style="margin-bottom: 0.5rem;">Use \(0 \in \partial f(x^*)\) to certify minimizers.</li>
+                <li style="margin-bottom: 0.5rem;">Connect this to proximal methods and projected/subgradient algorithms.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="jensens-inequality.html" style="color: #3498db; text-decoration: none;">See Jensen's inequality for expectation-based convex bounds</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="convex-optimization.html" style="color: #3498db; text-decoration: none;">Return to convex optimization problem forms</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">See how subgradients appear in practical algorithms</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/subgradients_demo.js"></script>
+</body>
+</html>

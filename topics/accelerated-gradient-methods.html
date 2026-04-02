@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn Nesterov acceleration and FISTA intuition for convex optimization.">
+    <title>Accelerated Gradient Methods - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Accelerated Gradient Methods</h1>
+            <p>Add momentum in a principled way to improve first-order convergence on smooth convex objectives.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Why Acceleration?</h2>
+            <p>
+                Plain gradient descent can be conservative on ill-conditioned landscapes.
+                Nesterov-style acceleration introduces a look-ahead point that combines
+                current gradients with controlled momentum.
+            </p>
+        </section>
+
+        <section>
+            <h2>Strongly Convex Nesterov Update</h2>
+            <p>
+                For \(\mu\)-strongly convex, \(L\)-smooth objectives:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[y_k = x_k + \beta(x_k - x_{k-1}), \quad x_{k+1}=y_k-\frac{1}{L}\nabla f(y_k),\]
+            </p>
+            <p>
+                with \(\beta = (\sqrt{\kappa}-1)/(\sqrt{\kappa}+1)\), \(\kappa=L/\mu\).
+            </p>
+        </section>
+
+        <section>
+            <h2>FISTA Connection</h2>
+            <p>
+                For composite problems \(f(x)+g(x)\), FISTA applies Nesterov-style momentum
+                to proximal gradient steps and often improves practical convergence dramatically.
+            </p>
+            <pre class="algorithm-code">
+repeat
+    y_k = x_k + beta_k * (x_k - x_{k-1})
+    x_{k+1} = prox_{alpha g}(y_k - alpha * grad f(y_k))
+until convergence
+            </pre>
+        </section>
+
+        <section>
+            <h2>Interactive: GD vs Nesterov</h2>
+            <p>
+                We compare objective decay on a 2D strongly convex quadratic.
+                Observe how acceleration helps when condition number grows.
+            </p>
+
+            <div class="example">
+                <label for="acc-kappa-range">Condition number \(\kappa\):</label>
+                <input type="range" id="acc-kappa-range" min="1" max="120" step="1" value="20">
+
+                <label for="acc-steps-range" style="display:block; margin-top:0.8rem;">Iterations:</label>
+                <input type="range" id="acc-steps-range" min="10" max="220" step="5" value="120">
+
+                <label for="acc-x0-range" style="display:block; margin-top:0.8rem;">Initial distance scale:</label>
+                <input type="range" id="acc-x0-range" min="0.5" max="3" step="0.1" value="2.0">
+
+                <p id="acc-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Objective Comparison</h4>
+                    <canvas id="acceleratedCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Metrics</h4>
+                    <pre id="acceleratedMetrics" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run the demo to populate metrics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runAcceleratedBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">Run Comparison</button>
+                <button id="resetAcceleratedBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Practice Notes</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Acceleration is sensitive to noise; consider restart heuristics.</li>
+                <li style="margin-bottom: 0.5rem;">For composite models, combine with proximal operators (FISTA).</li>
+                <li style="margin-bottom: 0.5rem;">Track both objective and gradient norm to avoid misleading progress signals.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="strong-convexity-smoothness.html" style="color: #3498db; text-decoration: none;">Review curvature assumptions that drive acceleration gains</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="proximal-operators-moreau.html" style="color: #3498db; text-decoration: none;">Connect acceleration with proximal operators and FISTA</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="optimization-diagnostics.html" style="color: #3498db; text-decoration: none;">Inspect acceleration with multi-metric diagnostics</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/accelerated_methods_demo.js"></script>
+</body>
+</html>

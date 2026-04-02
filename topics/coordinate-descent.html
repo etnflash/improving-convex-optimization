@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn coordinate descent methods for convex optimization.">
+    <title>Coordinate Descent - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Coordinate Descent</h1>
+            <p>Optimize one coordinate at a time for scalable convex learning on sparse and high-dimensional data.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Core Idea</h2>
+            <p>
+                Instead of updating all variables simultaneously, coordinate descent updates a single coordinate
+                (or block) while holding others fixed. Each step is cheap and often admits closed forms.
+            </p>
+        </section>
+
+        <section>
+            <h2>Problem Setup</h2>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_{x\in\mathbb{R}^n} F(x).\]
+            </p>
+            <p>
+                At iteration \(k\), choose coordinate \(j_k\) and solve
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[x_{j_k}^{k+1}=\arg\min_u F(x_1^k,\dots,x_{j_k-1}^k,u,x_{j_k+1}^k,\dots,x_n^k).\]
+            </p>
+        </section>
+
+        <section>
+            <h2>Selection Rules</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Cyclic: iterate through coordinates in fixed order.</li>
+                <li style="margin-bottom: 0.5rem;">Randomized: sample coordinates for stronger expected-rate theory.</li>
+                <li style="margin-bottom: 0.5rem;">Greedy (Gauss-Southwell): pick largest predicted improvement.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Example: Lasso-Friendly Updates</h2>
+            <p>
+                For least-squares + L1 regularization, each coordinate update becomes a scalar soft-thresholding step,
+                making coordinate descent extremely competitive in sparse regression.
+            </p>
+            <div class="example">
+                <h4>Practical Strength</h4>
+                <p>
+                    Works very well when features are sparse and coordinate-wise residual updates can be cached.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Block Coordinate Descent</h2>
+            <p>
+                Group variables into blocks and update one block at a time. This balances cheap updates and
+                faster per-iteration progress compared to scalar coordinates.
+            </p>
+            <pre class="algorithm-code">
+repeat
+    choose block B_k
+    x_{B_k}^{k+1} = argmin over block with others fixed
+until convergence
+            </pre>
+        </section>
+
+        <section>
+            <h2>Convergence Intuition</h2>
+            <p>
+                For convex smooth objectives, randomized coordinate descent often achieves rates depending on
+                coordinate-wise Lipschitz constants. Strong convexity yields linear convergence in expectation.
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: Cyclic vs Randomized Coordinate Descent</h2>
+            <p>
+                We run both rules on a coupled quadratic
+                \(F(x)=\tfrac{1}{2}x^TQx-b^Tx\), comparing objective decay and final iterate quality.
+                Use the same iteration budget and initial point to see how update order changes behavior.
+            </p>
+
+            <div class="example">
+                <label for="cd-steps-range">Iterations:</label>
+                <input type="range" id="cd-steps-range" min="2" max="120" step="1" value="30">
+
+                <label for="cd-x0x-range" style="display:block; margin-top:0.8rem;">Initial \(x_0\) first coordinate:</label>
+                <input type="range" id="cd-x0x-range" min="-4" max="4" step="0.1" value="3.0">
+
+                <label for="cd-x0y-range" style="display:block; margin-top:0.8rem;">Initial \(x_0\) second coordinate:</label>
+                <input type="range" id="cd-x0y-range" min="-4" max="4" step="0.1" value="-3.0">
+
+                <p id="cd-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Objective Curves</h4>
+                    <canvas id="cdCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Final Comparison</h4>
+                    <pre id="cdMetricsBox" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run the demo to populate metrics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runCdBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">▶ Run Comparison</button>
+                <button id="resetCdBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">↺ Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Implementation Checklist</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Precompute or cache terms needed for fast coordinate updates.</li>
+                <li style="margin-bottom: 0.5rem;">Compare cyclic vs randomized selection on your dataset.</li>
+                <li style="margin-bottom: 0.5rem;">Track objective decrease and coordinate gradient magnitudes.</li>
+                <li style="margin-bottom: 0.5rem;">Use block updates when coordinates are strongly coupled.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="stochastic-gradient-methods.html" style="color: #3498db; text-decoration: none;">Compare coordinate updates with stochastic gradient updates</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="proximal-operators-moreau.html" style="color: #3498db; text-decoration: none;">Connect coordinate-wise shrinkage to proximal operators</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">Place coordinate descent in the algorithm toolbox</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/coordinate_demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn regularization paths for L1, L2, and elastic-net style convex models.">
+    <title>Regularization Paths - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Regularization Paths</h1>
+            <p>Track how model coefficients change as regularization strength varies.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Why Regularization Paths?</h2>
+            <p>
+                In convex learning models, the regularization parameter \(\lambda\) controls bias-variance tradeoff,
+                sparsity, and stability. A path view shows how solutions evolve continuously as \(\lambda\) changes.
+            </p>
+            <p style="text-align:center; margin:1rem 0;">
+                \[\min_w\; \mathcal{L}(w) + \lambda \mathcal{R}(w).\]
+            </p>
+        </section>
+
+        <section>
+            <h2>Typical Behaviors</h2>
+            <div class="example">
+                <h4>L1 (Lasso)</h4>
+                <p>As \(\lambda\) grows, many coefficients hit exactly zero (sparsity).</p>
+            </div>
+            <div class="example">
+                <h4>L2 (Ridge)</h4>
+                <p>Coefficients shrink smoothly toward zero, rarely exactly zero.</p>
+            </div>
+            <div class="example">
+                <h4>Elastic Net</h4>
+                <p>Interpolates between sparsity and smooth shrinkage.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Interactive: Coefficient Path Explorer</h2>
+            <p>
+                This demo uses a stylized convex surrogate for three coefficients to illustrate how each
+                regularization type changes path geometry. Move \(\lambda\) and compare L1/L2/Elastic styles.
+            </p>
+
+            <div class="example">
+                <label for="reg-lambda-range">\(\lambda\) value:</label>
+                <input type="range" id="reg-lambda-range" min="0" max="3" step="0.05" value="0.6">
+
+                <label for="reg-en-mix-range" style="display:block; margin-top:0.8rem;">Elastic mix \(\alpha\) (0=L2, 1=L1):</label>
+                <input type="range" id="reg-en-mix-range" min="0" max="1" step="0.05" value="0.5">
+
+                <p id="reg-params-display" style="margin-top:1rem;"></p>
+                <p id="reg-current-display"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Path Curves</h4>
+                    <canvas id="regCanvas" width="520" height="340" style="border:1px solid #ccc; background:#fafafa; border-radius:6px; width:100%; max-width:520px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Current Coefficients</h4>
+                    <pre id="regMetricsBox" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:340px;">Move sliders to update coefficients.</pre>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Practical Checklist</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Sweep \(\lambda\) on a log scale, not linear only.</li>
+                <li style="margin-bottom: 0.5rem;">Track validation error alongside coefficient magnitude.</li>
+                <li style="margin-bottom: 0.5rem;">For sparse modeling, monitor number of active coefficients.</li>
+                <li style="margin-bottom: 0.5rem;">Use warm starts when solving along a path for speed.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="subgradients-optimality.html" style="color:#3498db; text-decoration:none;">Relate L1 path kinks to subgradient optimality</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="proximal-operators-moreau.html" style="color:#3498db; text-decoration:none;">Connect path updates to proximal shrinkage operators</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="stochastic-gradient-methods.html" style="color:#3498db; text-decoration:none;">Compare deterministic path analysis with stochastic training</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/regularization_path_demo.js"></script>
+</body>
+</html>

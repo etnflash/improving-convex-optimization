@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Practical convex solver engineering: stopping, scaling, warm starts, and diagnostics.">
+    <title>Solver Engineering Practice - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Solver Engineering Practice</h1>
+            <p>Turn theory into robust optimization pipelines with practical diagnostics and control rules.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Core Engineering Checklist</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;"><strong>Scaling:</strong> normalize columns and constraint magnitudes.</li>
+                <li style="margin-bottom:0.5rem;"><strong>Stopping:</strong> combine objective, feasibility, and stationarity criteria.</li>
+                <li style="margin-bottom:0.5rem;"><strong>Warm starts:</strong> reuse previous solutions across similar runs.</li>
+                <li style="margin-bottom:0.5rem;"><strong>Safeguards:</strong> cap steps, detect stagnation, and restart when needed.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Typical Stop Rule</h2>
+            <p>
+                A practical stop condition checks several residuals together:
+            </p>
+            <p style="text-align:center; margin:1rem 0;">
+                \[\|r_{\text{prim}}\|\le\varepsilon_p,\quad
+                  \|r_{\text{dual}}\|\le\varepsilon_d,\quad
+                  \|\nabla f\|\le\varepsilon_g.\]
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: Tuning Dashboard</h2>
+            <p>
+                Simulate a solver run and see how scaling quality, warm-start quality, and tolerance strictness
+                affect iteration count, runtime, and final residuals.
+            </p>
+
+            <div class="example">
+                <label for="se-scaling-range">Scaling quality:</label>
+                <input type="range" id="se-scaling-range" min="1" max="10" step="1" value="6">
+
+                <label for="se-warmstart-range" style="display:block; margin-top:0.8rem;">Warm-start quality:</label>
+                <input type="range" id="se-warmstart-range" min="1" max="10" step="1" value="5">
+
+                <label for="se-tolerance-range" style="display:block; margin-top:0.8rem;">Tolerance strictness:</label>
+                <input type="range" id="se-tolerance-range" min="1" max="10" step="1" value="7">
+
+                <p id="se-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Run KPI Bars</h4>
+                    <canvas id="solverEngineeringCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Run Report</h4>
+                    <pre id="solverEngineeringMetrics" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Adjust controls to populate run report.</pre>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Worked Example</h2>
+            <div class="example">
+                <h4>Stopping Decision With Multi-Metric Thresholds</h4>
+                <p>
+                    Assume tolerances \(\varepsilon_p=10^{-4}\), \(\varepsilon_d=10^{-4}\), \(\varepsilon_g=5\times 10^{-5}\)
+                    and current diagnostics
+                    \(\|r_{\text{prim}}\|=8\times 10^{-5}\),
+                    \(\|r_{\text{dual}}\|=1.6\times 10^{-4}\),
+                    \(\|\nabla f\|=3\times 10^{-5}\).
+                </p>
+                <p>
+                    Two checks pass, but dual feasibility fails. Practical action:
+                    continue iterations, or tighten scaling/preconditioning on dual blocks before rerunning.
+                    This prevents false convergence when objective looks flat but KKT consistency is incomplete.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;"><a href="optimization-diagnostics.html" style="color:#3498db; text-decoration:none;">Use multi-metric dashboards for real stopping logic</a></li>
+                <li style="margin-bottom:0.5rem;"><a href="convergence-rates.html" style="color:#3498db; text-decoration:none;">Relate engineering choices to asymptotic rate expectations</a></li>
+                <li style="margin-bottom:0.5rem;"><a href="line-search-methods.html" style="color:#3498db; text-decoration:none;">Tune step control strategies in first-order solvers</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/solver_engineering_demo.js"></script>
+</body>
+</html>

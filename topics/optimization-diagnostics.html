@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Optimization diagnostics dashboard for objective, feasibility, gradient norm, and dual-style gap monitoring.">
+    <title>Optimization Diagnostics Dashboard - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Optimization Diagnostics Dashboard</h1>
+            <p>Monitor objective, feasibility, gradient norm, and stopping criteria in one place.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Why Diagnostics Matter</h2>
+            <p>
+                A single metric can be misleading. Robust optimization workflows track multiple signals:
+                objective trend, constraint violation, stationarity, and gap-like criteria.
+                This dashboard-style view helps identify stagnation, step-size mismatch, and feasibility issues early.
+            </p>
+        </section>
+
+        <section>
+            <h2>Core Metrics</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;">Objective value \(f(x_k)\): are we making progress?</li>
+                <li style="margin-bottom:0.5rem;">Feasibility residual: \(\|c(x_k)\|\) for constraints.</li>
+                <li style="margin-bottom:0.5rem;">Stationarity proxy: \(\|\nabla f(x_k)\|\) or KKT residual.</li>
+                <li style="margin-bottom:0.5rem;">Gap-style metric: primal-dual gap or surrogate stopping gap.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Interactive: Multi-Metric Simulator</h2>
+            <p>
+                This simulator generates a synthetic optimization trace with four diagnostics.
+                Adjust decay/noise settings to see how curves change and when stop criteria are satisfied.
+            </p>
+
+            <div class="example">
+                <label for="diag-steps-range">Iterations:</label>
+                <input type="range" id="diag-steps-range" min="20" max="250" step="10" value="120">
+
+                <label for="diag-decay-range" style="display:block; margin-top:0.8rem;">Base decay (higher = faster):</label>
+                <input type="range" id="diag-decay-range" min="0.90" max="0.995" step="0.001" value="0.965">
+
+                <label for="diag-noise-range" style="display:block; margin-top:0.8rem;">Noise level:</label>
+                <input type="range" id="diag-noise-range" min="0" max="0.2" step="0.005" value="0.03">
+
+                <label for="diag-thresh-range" style="display:block; margin-top:0.8rem;">Stop threshold:</label>
+                <input type="range" id="diag-thresh-range" min="0.001" max="0.1" step="0.001" value="0.01">
+
+                <p id="diag-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Diagnostics Curves</h4>
+                    <canvas id="diagCanvas" width="520" height="340" style="border:1px solid #ccc; background:#fafafa; border-radius:6px; width:100%; max-width:520px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Status Panel</h4>
+                    <pre id="diagMetricsBox" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:340px;">Run the simulation to populate diagnostics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runDiagBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">▶ Run Simulation</button>
+                <button id="resetDiagBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">↺ Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Checklist for Real Projects</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;">Log all key metrics per iteration, not only objective.</li>
+                <li style="margin-bottom:0.5rem;">Set separate tolerances for feasibility and stationarity.</li>
+                <li style="margin-bottom:0.5rem;">Flag divergence early when objective drops but residuals explode.</li>
+                <li style="margin-bottom:0.5rem;">Always inspect curves, not just final scalar summaries.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;"><a href="algorithms-duality.html" style="color:#3498db; text-decoration:none;">Map these diagnostics to primal-dual and KKT workflows</a></li>
+                <li style="margin-bottom:0.5rem;"><a href="admm-splitting.html" style="color:#3498db; text-decoration:none;">Compare with ADMM residual diagnostics</a></li>
+                <li style="margin-bottom:0.5rem;"><a href="interior-point-methods.html" style="color:#3498db; text-decoration:none;">Relate stopping rules to barrier-gap criteria</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/diagnostics_dashboard_demo.js"></script>
+</body>
+</html>

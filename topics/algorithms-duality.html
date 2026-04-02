@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blend duality theory with practical convex optimization algorithms.">
+    <title>Algorithms &amp; Duality – Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <!-- MathJax for rendering mathematical equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Algorithms &amp; Duality</h1>
+            <p>Translate convex analysis into actionable solvers and interpret solutions through dual views.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Why Algorithms and Duality Matter</h2>
+            <p>
+                Convex optimization becomes truly useful once you can both compute solutions efficiently and certify
+                their quality. Algorithms provide the computational pathway, while duality supplies certificates,
+                bounds, and sensitivity analysis. Together they turn definitions into deployable tools.
+            </p>
+            <div class="diagram-placeholder">
+                <svg viewBox="0 0 280 150" aria-label="Primal and dual timeline">
+                    <defs>
+                        <marker id="arrowhead-blue" markerWidth="6" markerHeight="6" refX="0" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L6,3 z" fill="#3182ce" />
+                        </marker>
+                        <marker id="arrowhead-green" markerWidth="6" markerHeight="6" refX="0" refY="3" orient="auto">
+                            <path d="M0,0 L0,6 L6,3 z" fill="#38a169" />
+                        </marker>
+                    </defs>
+                    <line x1="30" y1="60" x2="250" y2="60" style="stroke:#cbd5e0; stroke-width:2;" />
+                    <circle cx="60" cy="60" r="6" style="fill:#3182ce;" />
+                    <text x="40" y="40" style="font-size:12px; fill:#2d3748;">Model</text>
+                    <circle cx="150" cy="60" r="6" style="fill:#3182ce;" />
+                    <text x="120" y="40" style="font-size:12px; fill:#2d3748;">Algorithm</text>
+                    <circle cx="220" cy="60" r="6" style="fill:#38a169;" />
+                    <text x="200" y="40" style="font-size:12px; fill:#2d3748;">Dual insight</text>
+                    <path d="M60,90 C80,110 120,110 150,90" style="fill:none; stroke:#3182ce; stroke-width:2; marker-end:url(#arrowhead-blue);" />
+                    <path d="M150,90 C180,110 210,110 220,90" style="fill:none; stroke:#38a169; stroke-width:2; marker-end:url(#arrowhead-green);" />
+                </svg>
+                <p class="diagram-caption">Efficient solvers and dual certificates close the loop between modeling and guarantees.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>First-Order Optimality Conditions</h2>
+            <p>
+                For a convex problem with inequality constraints and affine equalities, the Karush–Kuhn–Tucker (KKT)
+                conditions are sufficient for global optimality and, under standard regularity assumptions (for example,
+                Slater's condition), also necessary:
+            </p>
+            <p style="text-align:center; margin:1rem 0;">
+                \[\begin{aligned}
+                    \nabla f_0(x^*) + \sum_{i=1}^m \lambda_i \nabla f_i(x^*) + A^T \nu &= 0, \\
+                    f_i(x^*) &\le 0, \; \lambda_i \ge 0, \; \lambda_i f_i(x^*) = 0, \\
+                    A x^* &= b.
+                \end{aligned}\]
+            </p>
+            <p>
+                Strong duality certifies that primal and dual optimal values match, so satisfying these equations
+                means you have already found the global solution.
+            </p>
+        </section>
+
+        <section>
+            <h2>Dual Problem Construction</h2>
+            <p>
+                The Lagrangian collects constraints into scalar multipliers:
+            </p>
+            <p style="text-align:center; margin:1rem 0;">
+                \[\mathcal{L}(x, \lambda, \nu) = f_0(x) + \sum_{i=1}^m \lambda_i f_i(x) + \nu^T (Ax - b).\]
+            </p>
+            <p>
+                The dual function \(g(\lambda, \nu) = \inf_x \mathcal{L}(x, \lambda, \nu)\) is always concave.
+                Maximizing it over \(\lambda \ge 0\) gives the dual problem and a lower bound on the primal
+                optimum. Matching primal and dual solutions provides certificates and sensitivity information.
+            </p>
+            <div class="diagram-placeholder">
+                <svg viewBox="0 0 420 220" aria-label="Primal and dual values over iterations">
+                    <defs>
+                        <marker id="axis-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                            <path d="M0,0 L8,4 L0,8 z" fill="#64748b" />
+                        </marker>
+                    </defs>
+                    <line x1="52" y1="178" x2="370" y2="178" style="stroke:#64748b; stroke-width:2; marker-end:url(#axis-arrow);" />
+                    <line x1="52" y1="178" x2="52" y2="24" style="stroke:#64748b; stroke-width:2; marker-end:url(#axis-arrow);" />
+                    <text x="340" y="198" style="fill:#475569; font-size:12px;">iteration k</text>
+                    <text x="14" y="30" style="fill:#475569; font-size:12px;">value</text>
+
+                    <path d="M70,72 C130,92 190,112 250,122 C294,128 326,130 352,132" style="fill:none; stroke:#3b82f6; stroke-width:3;" />
+                    <path d="M70,154 C132,148 194,142 252,138 C296,136 327,135 352,134" style="fill:none; stroke:#16a34a; stroke-width:3;" />
+
+                    <line x1="342" y1="129" x2="342" y2="136" style="stroke:#db2777; stroke-width:2.5; stroke-dasharray:3 3;" />
+                    <line x1="250" y1="122" x2="250" y2="138" style="stroke:#db2777; stroke-width:2.5; stroke-dasharray:5 4;" />
+                    <text x="260" y="133" style="fill:#db2777; font-size:12px;">gap(k)</text>
+                    <text x="327" y="124" style="fill:#db2777; font-size:11px;">gap -> 0</text>
+
+                    <text x="92" y="64" style="fill:#3b82f6; font-size:13px;">primal value p(k)</text>
+                    <text x="88" y="168" style="fill:#16a34a; font-size:13px;">dual value d(k)</text>
+                    <text x="242" y="166" style="fill:#475569; font-size:11px;">p(k) - d(k)</text>
+                </svg>
+                <p class="diagram-caption">As algorithms progress, the primal-dual gap shrinks to zero under strong duality.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Algorithm Playbook</h2>
+            <div class="example">
+                <h4>Projected Gradient</h4>
+                <p>Iterate along gradient steps and project back to the feasible set to enforce constraints.</p>
+                <pre class="algorithm-code">
+repeat
+    x_half = x_k - alpha_k * grad_f0(x_k)
+    x_next = project_C(x_half)
+until norm(x_next - x_k) <= epsilon
+                </pre>
+            </div>
+            <div class="example">
+                <h4>Subgradient + Dual Averaging</h4>
+                <p>
+                    Works for non-differentiable objectives; dual averaging keeps a running mean of subgradients to
+                    stabilize progress.
+                </p>
+            </div>
+            <div class="example">
+                <h4>Interior-Point (Barrier) Methods</h4>
+                <p>
+                    Replace inequality constraints with a barrier term \(-\mu \sum_i \log(-f_i(x))\) and follow the
+                    central path by repeatedly solving Newton systems. Dual variables emerge from the linear systems,
+                    providing a primal-dual pair each iteration.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Worked Example: A Simple Quadratic Program</h2>
+            <p>
+                Let's turn the ideas into a compact 3-step flow.
+            </p>
+
+            <div class="worked-problem">
+                <h4>Problem</h4>
+                <p style="text-align:center; margin:0.6rem 0;">
+                \[\begin{aligned}
+                    \text{minimize} \quad &\frac{1}{2} \|x - d\|_2^2 \\
+                    \text{subject to} \quad &\|x\|_\infty \le \rho,
+                \end{aligned}\]
+                </p>
+                <p>
+                where \(d \in \mathbb{R}^n\) is data and \(\rho > 0\) is a bound. This is a projection problem: find
+                the point in the \(\ell_\infty\) ball closest to \(d\).
+                </p>
+            </div>
+
+            <div class="worked-grid">
+                <div class="worked-step">
+                    <h4>Step 1. Stationarity</h4>
+                    <div class="worked-step-layout">
+                        <div class="worked-step-text">
+                            <p>Convert the box constraint to component bounds \(-\rho \le x_i \le \rho\), then apply KKT.</p>
+                            <div class="math-scroll">\[x^* - d + \lambda = 0\]</div>
+                            <p class="mini-note">Interpretation: \(\lambda = d - x^*\), so it points from \(x^*\) toward \(d\).</p>
+                        </div>
+                        <div class="worked-step-visual" aria-hidden="true">
+                            <svg viewBox="0 0 170 120">
+                                <rect x="22" y="18" width="90" height="84" fill="none" stroke="#64748b" stroke-width="2" rx="5" />
+                                <circle cx="130" cy="32" r="4" fill="#dc2626" />
+                                <circle cx="112" cy="52" r="4" fill="#16a34a" />
+                                <line x1="116" y1="48" x2="126" y2="36" stroke="#0ea5e9" stroke-width="2" marker-end="url(#m1)" />
+                                <text x="118" y="27" font-size="10" fill="#dc2626">d</text>
+                                <text x="98" y="66" font-size="10" fill="#16a34a">x*</text>
+                                <text x="132" y="46" font-size="10" fill="#0ea5e9">λ</text>
+                                <defs>
+                                    <marker id="m1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                                        <path d="M0,0 L6,3 L0,6 z" fill="#0ea5e9" />
+                                    </marker>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="worked-step">
+                    <h4>Step 2. Closed-form solution</h4>
+                    <div class="worked-step-layout">
+                        <div class="worked-step-text">
+                            <p>The optimizer is just coordinate-wise clipping:</p>
+                            <div class="math-scroll">\[x_i^* = \operatorname{sign}(d_i)\min(|d_i|,\rho)\]</div>
+                            <p class="mini-note">If \(|d_i| \le \rho\), keep it. If \(|d_i| > \rho\), clamp to \(\pm \rho\).</p>
+                        </div>
+                        <div class="worked-step-visual" aria-hidden="true">
+                            <svg viewBox="0 0 170 120">
+                                <line x1="18" y1="95" x2="152" y2="95" stroke="#64748b" stroke-width="2" />
+                                <line x1="35" y1="25" x2="35" y2="95" stroke="#64748b" stroke-width="2" />
+                                <line x1="48" y1="42" x2="138" y2="42" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4" />
+                                <line x1="48" y1="74" x2="138" y2="74" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4 4" />
+                                <path d="M42,90 L70,66 L95,48 L112,36" fill="none" stroke="#3b82f6" stroke-width="2.5" />
+                                <path d="M112,36 L112,42 L145,42" fill="none" stroke="#16a34a" stroke-width="2.5" />
+                                <path d="M42,90 L42,74 L20,74" fill="none" stroke="#16a34a" stroke-width="2.5" />
+                                <text x="116" y="34" font-size="10" fill="#3b82f6">d_i</text>
+                                <text x="117" y="56" font-size="10" fill="#16a34a">+ρ clip</text>
+                                <text x="20" y="88" font-size="10" fill="#16a34a">-ρ clip</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="worked-step">
+                    <h4>Step 3. Quick numeric check</h4>
+                    <div class="worked-step-layout">
+                        <div class="worked-step-text">
+                            <p>Use the demo parameters \(d=(3,2.5)\), \(\rho=1.5\).</p>
+                            <div class="math-scroll">\[x^*=(1.5,1.5), \quad \lambda=d-x^*=(1.5,1.0)\]</div>
+                            <div class="math-scroll">\[f^*=\tfrac{1}{2}(1.5^2+1^2)=1.625\]</div>
+                            <p class="mini-note">Binding coordinates have nonzero multipliers, which is the dual sensitivity signal.</p>
+                        </div>
+                        <div class="worked-step-visual" aria-hidden="true">
+                            <svg viewBox="0 0 170 120">
+                                <rect x="18" y="18" width="95" height="84" fill="none" stroke="#64748b" stroke-width="2" rx="5" />
+                                <circle cx="132" cy="26" r="4" fill="#dc2626" />
+                                <circle cx="113" cy="18" r="4" fill="#16a34a" />
+                                <line x1="113" y1="18" x2="128" y2="24" stroke="#0ea5e9" stroke-width="2" marker-end="url(#m3)" />
+                                <text x="136" y="24" font-size="9" fill="#dc2626">d=(3,2.5)</text>
+                                <text x="90" y="34" font-size="9" fill="#16a34a">x*=(1.5,1.5)</text>
+                                <text x="128" y="36" font-size="9" fill="#0ea5e9">λ=d-x*</text>
+                                <text x="20" y="112" font-size="10" fill="#334155">distance^2 = 3.25</text>
+                                <text x="104" y="112" font-size="10" fill="#0f766e">f* = 1.625</text>
+                                <defs>
+                                    <marker id="m3" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                                        <path d="M0,0 L6,3 L0,6 z" fill="#0ea5e9" />
+                                    </marker>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Interactive Demo: Projected Gradient on the Box</h2>
+            <p>
+                Below is a live simulation of the projected gradient method solving a projection problem in 2D.
+                Watch the iterates converge and see how the primal objective and projection error decrease.
+            </p>
+
+            <div style="margin:2rem 0; padding:1.5rem; background:#f9f9f9; border-radius:8px; border-left:4px solid #3182ce;">
+                <h4 style="margin-bottom:1rem; color:#2c3e50;">Problem Setup</h4>
+                <p style="margin-bottom:0.5rem;"><strong>Data vector:</strong> \(d = (3, 2.5)\)</p>
+                <p style="margin-bottom:0.5rem;"><strong>Box bound:</strong> \(\|x\|_\infty \le \rho = 1.5\)</p>
+                <p style="margin-bottom:0.5rem;"><strong>Initial point:</strong> \(x_0 = (-1.5, -1.5)\)</p>
+                <p style="margin-bottom:0.5rem;"><strong>Optimal value:</strong> \(f^* = \frac{1}{2}(1.5^2 + 1^2) = 1.625\)</p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:2rem 0;">
+                <!-- Left: Visualization -->
+                <div>
+                    <h4 style="margin-bottom:1rem;">Convergence Plot</h4>
+                    <canvas id="demoCanvas" width="400" height="300" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+
+                <!-- Right: Metrics -->
+                <div>
+                    <h4 style="margin-bottom:1rem;">Iteration Metrics</h4>
+                    <pre id="metricsBox" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:300px;">
+Iteration | Primal Value | Projection Error | Status
+----------+--------------+------------------+----------
+Starting...
+                    </pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runDemoBtn" style="padding:0.7rem 1.5rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">
+                    ▶ Run Algorithm
+                </button>
+                <button id="resetDemoBtn" style="padding:0.7rem 1.5rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">
+                    ↺ Reset
+                </button>
+            </div>
+
+            <p style="margin-top:1.5rem; font-size:0.95rem; color:#718096;">
+                <strong>How it works:</strong> The algorithm starts at a point far from the optimal projection and iteratively
+                steps down the gradient of the objective, then projects back into the box. The projection error measures how far the
+                current point is from optimality. In this demo we report projection error (distance to the projected optimum),
+                so when that error reaches near-zero, convergence is achieved.
+            </p>
+        </section>
+
+        <section>
+            <h2>Primal–Dual Monitoring Checklist</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;">Track primal feasibility (constraint violation norms).</li>
+                <li style="margin-bottom:0.5rem;">Track dual feasibility (KKT residuals).</li>
+                <li style="margin-bottom:0.5rem;">Measure the duality gap to know when to stop early.</li>
+                <li style="margin-bottom:0.5rem;">Log step sizes and barrier parameters for reproducibility.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;">Deepen optimality certificates with the <a href="kkt-slater-conditions.html">KKT and Slater Conditions module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Understand curvature effects in the <a href="strong-convexity-smoothness.html">Strong Convexity &amp; Smoothness module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Compare first-order speedups in the <a href="accelerated-gradient-methods.html">Accelerated Gradient Methods module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Practice adaptive steps in the <a href="line-search-methods.html">Line Search Methods module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Unify modeling families in the <a href="conic-optimization.html">Conic Optimization module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Track coupled residuals in the <a href="primal-dual-methods.html">Primal-Dual Methods module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Map asymptotic behavior in the <a href="convergence-rates.html">Convergence Rates module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Decompose composite models with the <a href="operator-splitting-methods.html">Operator Splitting Methods module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Translate theory into deployment rules in the <a href="solver-engineering-practice.html">Solver Engineering Practice module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Study <a href="conjugate-fenchel-duality.html">Conjugate Functions &amp; Fenchel Duality</a> to derive dual models systematically.</li>
+                <li style="margin-bottom:0.5rem;">Practice splitting methods with the <a href="admm-splitting.html">ADMM module</a> for large-scale composite objectives.</li>
+                <li style="margin-bottom:0.5rem;">Add second-order intuition with the <a href="interior-point-methods.html">Interior-Point Methods module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Study data-scale optimization with the <a href="stochastic-gradient-methods.html">Stochastic Gradient Methods module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Explore sparse high-dimensional updates with the <a href="coordinate-descent.html">Coordinate Descent module</a>.</li>
+                <li style="margin-bottom:0.5rem;">Use the <a href="optimization-diagnostics.html">Optimization Diagnostics Dashboard</a> to monitor stopping criteria holistically.</li>
+                <li style="margin-bottom:0.5rem;">Implement a projected gradient demo using the convexity slider data.</li>
+                <li style="margin-bottom:0.5rem;">Derive explicit duals for least-squares, SVMs, or portfolio problems.</li>
+                <li style="margin-bottom:0.5rem;">Extend to stochastic or distributed convex optimization settings.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Demo: Projected Gradient on Box Constraint
+        const d = [3, 2.5];           // Data vector
+        const rho = 1.5;              // Box bound
+        const alpha = 0.1;            // Step size
+        const epsilon = 1e-6;         // Tolerance
+        const maxIter = 100;          // Max iterations
+
+        let x;                        // Current point
+        let historyPrimal = [];       // Primal objective history
+        let historyGap = [];          // Projection error history
+        let iterCount = 0;
+
+        function resetDemo() {
+            x = [-1.5, -1.5];         // Start at the opposite corner of the feasible box
+            historyPrimal = [];
+            historyGap = [];
+            iterCount = 0;
+            document.getElementById('metricsBox').innerText = 
+                'Iteration | Primal Value | Projection Error | Status\n' +
+                '----------+--------------+------------------+----------\nReset complete.';
+        }
+
+        function projectionBox(y) {
+            // Project point y onto [-rho, rho]^n
+            return y.map(yi => Math.max(-rho, Math.min(rho, yi)));
+        }
+
+        function primalObjective(x) {
+            // f(x) = 0.5 * ||x - d||^2
+            let sum = 0;
+            for (let i = 0; i < x.length; i++) {
+                sum += (x[i] - d[i]) ** 2;
+            }
+            return sum / 2;
+        }
+
+        function projectionError(x) {
+            // Distance from current iterate to the projected optimum
+            let gradNorm = 0;
+            const xOpt = projectionBox(d);
+            for (let i = 0; i < x.length; i++) {
+                gradNorm += (x[i] - xOpt[i]) ** 2;
+            }
+            return Math.sqrt(gradNorm);
+        }
+
+        function stepProjectedGradient() {
+            // Gradient: grad f(x) = x - d
+            let grad = [];
+            for (let i = 0; i < x.length; i++) {
+                grad[i] = x[i] - d[i];
+            }
+
+            // Step
+            let xNext = [];
+            for (let i = 0; i < x.length; i++) {
+                xNext[i] = x[i] - alpha * grad[i];
+            }
+
+            // Project
+            x = projectionBox(xNext);
+
+            // Record
+            let fVal = primalObjective(x);
+            let gap = projectionError(x);
+            historyPrimal.push(fVal);
+            historyGap.push(gap);
+            iterCount++;
+
+            return { fVal, gap };
+        }
+
+        function runDemo() {
+            const btn = document.getElementById('runDemoBtn');
+            btn.disabled = true;
+            btn.innerText = '⏸ Running...';
+
+            resetDemo();
+            let converged = false;
+
+            for (let iter = 0; iter < maxIter; iter++) {
+                const { fVal, gap } = stepProjectedGradient();
+
+                if (gap < epsilon) {
+                    converged = true;
+                }
+
+                // Update display every 5 iterations
+                if (iter % 5 === 0 || converged) {
+                    updateMetricsDisplay(converged);
+                }
+
+                if (converged) break;
+            }
+
+            // Draw plot
+            drawConvergencePlot();
+
+            btn.disabled = false;
+            btn.innerText = '▶ Run Algorithm';
+        }
+
+        function updateMetricsDisplay(converged) {
+            const iterWidth = 10;
+            const primalWidth = 12;
+            const errorWidth = 16;
+            const statusWidth = 10;
+
+            let metricsText = 
+                'Iteration | Primal Value | Projection Error | Status\n' +
+                '----------+--------------+------------------+----------\n';
+            for (let i = 0; i < historyPrimal.length; i++) {
+                let status = i === historyPrimal.length - 1 && converged ? '✓ CONVERGED' : 'Running';
+                const iterCol = String(i).padEnd(iterWidth);
+                const primalCol = historyPrimal[i].toFixed(4).padEnd(primalWidth);
+                const errorCol = historyGap[i].toFixed(6).padEnd(errorWidth);
+                const statusCol = status.padEnd(statusWidth);
+                metricsText += 
+                    iterCol + '| ' + primalCol + ' | ' + errorCol + ' | ' + statusCol + '\n';
+            }
+            document.getElementById('metricsBox').innerText = metricsText;
+        }
+
+        function drawConvergencePlot() {
+            const canvas = document.getElementById('demoCanvas');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 50;
+
+            // Clear
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, width, height);
+
+            if (historyPrimal.length === 0) {
+                ctx.fillStyle = '#999';
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Run the algorithm to see the plot', width / 2, height / 2);
+                return;
+            }
+
+            // Find max value for scaling
+            const maxPrimal = Math.max(...historyPrimal);
+            const minPrimal = Math.min(...historyPrimal);
+            const rangeY = maxPrimal - minPrimal || 1;
+            const scaleX = (width - 2 * padding) / (historyPrimal.length - 1 || 1);
+            const scaleY = (height - 2 * padding) / rangeY;
+
+            // Draw grid
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (i * (height - 2 * padding) / 5);
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+
+            // Draw axes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.stroke();
+
+            // Y-axis labels and ticks
+            ctx.fillStyle = '#333';
+            ctx.font = '11px sans-serif';
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const y = height - padding - (i * (height - 2 * padding) / 5);
+                const val = minPrimal + (i * rangeY / 5);
+                ctx.beginPath();
+                ctx.moveTo(padding - 5, y);
+                ctx.lineTo(padding, y);
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.fillText(val.toFixed(3), padding - 10, y + 4);
+            }
+
+            // X-axis labels and ticks
+            ctx.textAlign = 'center';
+            for (let i = 0; i <= Math.min(10, historyPrimal.length - 1); i++) {
+                const idx = Math.floor(i * (historyPrimal.length - 1) / 10);
+                const x = padding + idx * scaleX;
+                ctx.beginPath();
+                ctx.moveTo(x, height - padding);
+                ctx.lineTo(x, height - padding + 5);
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.fillText(String(idx), x, height - padding + 20);
+            }
+
+            // Axis titles
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'center';
+            ctx.fillText('Iteration', width / 2, height - 10);
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.textAlign = 'center';
+            ctx.fillText('Objective Value', 0, 0);
+            ctx.restore();
+
+            // Draw primal curve
+            ctx.strokeStyle = '#3182ce';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            for (let i = 0; i < historyPrimal.length; i++) {
+                const x = padding + i * scaleX;
+                const y = height - padding - (historyPrimal[i] - minPrimal) * scaleY;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Draw points
+            ctx.fillStyle = '#3182ce';
+            for (let i = 0; i < historyPrimal.length; i += Math.max(1, Math.floor(historyPrimal.length / 8))) {
+                const x = padding + i * scaleX;
+                const y = height - padding - (historyPrimal[i] - minPrimal) * scaleY;
+                ctx.beginPath();
+                ctx.arc(x, y, 3.5, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+
+            // Optimal line (if visible)
+            const optVal = 1.625;
+            if (optVal >= minPrimal && optVal <= maxPrimal) {
+                const yOpt = height - padding - (optVal - minPrimal) * scaleY;
+                ctx.strokeStyle = '#38a169';
+                ctx.lineWidth = 1.5;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(padding, yOpt);
+                ctx.lineTo(width - padding, yOpt);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Label optimal
+                ctx.fillStyle = '#38a169';
+                ctx.font = '11px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText('Optimal: 1.625', padding + 10, yOpt - 5);
+            }
+
+            // Legend
+            ctx.font = '11px sans-serif';
+            ctx.fillStyle = '#3182ce';
+            ctx.fillRect(width - 150, padding + 5, 12, 12);
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'left';
+            ctx.fillText('Primal objective', width - 130, padding + 15);
+        }
+
+        // Event listeners
+        document.getElementById('runDemoBtn').addEventListener('click', runDemo);
+        document.getElementById('resetDemoBtn').addEventListener('click', () => {
+            resetDemo();
+            drawConvergencePlot();
+        });
+
+        // Initial draw
+        resetDemo();
+        drawConvergencePlot();
+    </script>
+</body>
+</html>

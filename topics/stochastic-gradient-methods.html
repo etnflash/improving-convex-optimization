@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn stochastic gradient methods for large-scale convex optimization.">
+    <title>Stochastic Gradient Methods - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Stochastic Gradient Methods</h1>
+            <p>Scale convex optimization to massive datasets with unbiased noisy gradients.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Finite-Sum Objective</h2>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_x \; F(x)=\frac{1}{N}\sum_{i=1}^N f_i(x).\]
+            </p>
+            <p>
+                Full gradients cost \(O(N)\) per step. Stochastic methods sample one (or a mini-batch of)
+                term(s) to reduce per-iteration cost.
+            </p>
+        </section>
+
+        <section>
+            <h2>SGD Update</h2>
+            <p>
+                Draw index \(i_k\) uniformly and use
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[x_{k+1}=x_k-\eta_k\nabla f_{i_k}(x_k).\]
+            </p>
+            <p>
+                The stochastic gradient is unbiased: \(\mathbb{E}[\nabla f_{i_k}(x_k)] = \nabla F(x_k)\).
+            </p>
+            <pre class="algorithm-code">
+repeat
+    sample i_k
+    g_k = grad f_{i_k}(x_k)
+    x_{k+1} = x_k - eta_k * g_k
+until budget or convergence
+            </pre>
+        </section>
+
+        <section>
+            <h2>Mini-batch Variant</h2>
+            <p>
+                With mini-batch \(B_k\),
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[g_k = \frac{1}{|B_k|}\sum_{i\in B_k} \nabla f_i(x_k).\]
+            </p>
+            <p>
+                Larger batches reduce variance but increase per-step work. In practice, hardware throughput
+                and noise scale guide the choice.
+            </p>
+        </section>
+
+        <section>
+            <h2>Step-size Strategies</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Diminishing: \(\eta_k = \eta_0 / \sqrt{k}\) or \(\eta_0/k\) for convergence guarantees.</li>
+                <li style="margin-bottom: 0.5rem;">Piecewise-constant schedules for practical training pipelines.</li>
+                <li style="margin-bottom: 0.5rem;">Polyak/averaging variants to stabilize noisy iterates.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Convergence Intuition</h2>
+            <p>
+                For convex Lipschitz objectives, averaged SGD often achieves \(O(1/\sqrt{k})\) suboptimality.
+                Strong convexity with appropriate step sizes can improve rates in expectation.
+            </p>
+        </section>
+
+        <section>
+            <h2>Variance Reduction (SVRG/SAGA Idea)</h2>
+            <p>
+                Variance-reduced methods mix cheap stochastic updates with occasional reference gradients,
+                recovering faster linear-like behavior on strongly convex finite sums.
+            </p>
+            <div class="example">
+                <h4>When to Upgrade from Plain SGD</h4>
+                <p>
+                    If data are finite-sum and repeatedly scanned, SVRG/SAGA-style approaches can converge much faster.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Interactive: Mini-batch Size vs Convergence Stability</h2>
+            <p>
+                We simulate stochastic updates on the simple convex objective
+                \(F(x)=\tfrac{1}{2}(x-2)^2\) with additive zero-mean gradient noise.
+                Compare batch sizes \(1\), \(8\), and \(32\): larger batches reduce noise variance and produce
+                smoother trajectories.
+            </p>
+
+            <div class="example">
+                <label for="sgd-alpha-range">Step size \(\eta\):</label>
+                <input type="range" id="sgd-alpha-range" min="0.01" max="0.5" step="0.01" value="0.12">
+
+                <label for="sgd-steps-range" style="display:block; margin-top:0.8rem;">Iterations:</label>
+                <input type="range" id="sgd-steps-range" min="20" max="300" step="10" value="120">
+
+                <label for="sgd-noise-range" style="display:block; margin-top:0.8rem;">Noise scale:</label>
+                <input type="range" id="sgd-noise-range" min="0" max="2" step="0.05" value="1.0">
+
+                <p id="sgd-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Objective Curves</h4>
+                    <canvas id="sgdCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Final Values</h4>
+                    <pre id="sgdMetricsBox" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run the demo to populate metrics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runSgdBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">▶ Run Comparison</button>
+                <button id="resetSgdBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">↺ Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Practice Checklist</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Plot train loss and gradient-norm proxy over iterations.</li>
+                <li style="margin-bottom: 0.5rem;">Compare batch sizes \(1, 32, 256\) under equal wall-clock budget.</li>
+                <li style="margin-bottom: 0.5rem;">Try iterate averaging and observe stability gains.</li>
+                <li style="margin-bottom: 0.5rem;">Benchmark SGD vs PGD/ADMM on your target structure.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="variance-reduction-methods.html" style="color: #3498db; text-decoration: none;">Continue with SVRG/SAGA in the Variance Reduction Methods module</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="projected-gradient-descent.html" style="color: #3498db; text-decoration: none;">Compare stochastic updates with constrained projected methods</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="mirror-descent-bregman.html" style="color: #3498db; text-decoration: none;">Explore stochastic mirror descent for non-Euclidean geometry</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">Place stochastic methods in the broader solver map</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/stochastic_demo.js"></script>
+</body>
+</html>

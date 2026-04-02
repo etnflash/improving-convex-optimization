@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Projection library for common convex sets: box, ball, simplex, and affine sets.">
+    <title>Projection Library for Convex Sets - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Projection Library for Convex Sets</h1>
+            <p>Reusable projection operators for box, ball, simplex, and affine constraints.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Why This Page Matters</h2>
+            <p>
+                Many first-order methods reduce to a gradient-like step followed by a projection.
+                Once projection operators are available, constrained optimization becomes practical
+                across many model families.
+            </p>
+            <p style="text-align:center; margin:1rem 0;">
+                \[x_{k+1} = \Pi_C\left(x_k - \alpha_k g_k\right).\]
+            </p>
+        </section>
+
+        <section>
+            <h2>Common Projection Operators</h2>
+
+            <div class="example">
+                <h4>1) Box Set</h4>
+                <p>
+                    For \(C=[-\rho,\rho]^n\), projection is coordinate-wise clipping:
+                    \(\Pi_C(v)_i=\max(-\rho,\min(\rho,v_i))\).
+                </p>
+            </div>
+
+            <div class="example">
+                <h4>2) Euclidean Ball</h4>
+                <p>
+                    For \(C=\{x:\|x\|_2\le r\}\),
+                    \(\Pi_C(v)=v\) if \(\|v\|_2\le r\), else
+                    \(\Pi_C(v)=r\,v/\|v\|_2\).
+                </p>
+            </div>
+
+            <div class="example">
+                <h4>3) Simplex</h4>
+                <p>
+                    For \(\Delta=\{x\ge 0,\;\sum_i x_i=1\}\), projection uses thresholding:
+                    \(x_i=\max(v_i-\tau,0)\) with \(\sum_i x_i=1\).
+                </p>
+            </div>
+
+            <div class="example">
+                <h4>4) Affine Set</h4>
+                <p>
+                    For \(C=\{x:Ax=b\}\), if \(AA^T\) is invertible:
+                    \(\Pi_C(v)=v-A^T(AA^T)^{-1}(Av-b)\).
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Interactive: 2D Projection Explorer</h2>
+            <p>
+                Choose a set type and drag sliders for a point \(v=(v_1,v_2)\). The tool computes
+                \(\Pi_C(v)\), shows the projected point, and reports distance \(\|v-\Pi_C(v)\|_2\).
+            </p>
+
+            <div class="example">
+                <label for="proj-set-select">Set type:</label>
+                <select id="proj-set-select" style="margin-left:0.5rem; padding:0.25rem;">
+                    <option value="box">Box [-1.5, 1.5]^2</option>
+                    <option value="ball">Ball ||x||_2 <= 1.5</option>
+                    <option value="simplex">2D Simplex (x >= 0, y >= 0, x+y=1)</option>
+                    <option value="affine">Affine line x + y = 1</option>
+                </select>
+
+                <label for="proj-v1-range" style="display:block; margin-top:0.8rem;">Point v1:</label>
+                <input type="range" id="proj-v1-range" min="-3" max="3" step="0.1" value="2.2">
+
+                <label for="proj-v2-range" style="display:block; margin-top:0.8rem;">Point v2:</label>
+                <input type="range" id="proj-v2-range" min="-3" max="3" step="0.1" value="-1.4">
+
+                <p id="proj-params-display" style="margin-top:1rem;"></p>
+                <p id="proj-point-display"></p>
+                <p id="proj-dist-display"></p>
+            </div>
+
+            <div style="margin:1.2rem 0;">
+                <canvas id="projCanvas" width="520" height="360" style="border:1px solid #ccc; background:#fafafa; border-radius:6px; width:100%; max-width:520px;"></canvas>
+            </div>
+        </section>
+
+        <section>
+            <h2>Usage Checklist</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Match each constraint type to its projection formula first.</li>
+                <li style="margin-bottom: 0.5rem;">Test numerical stability near boundaries.</li>
+                <li style="margin-bottom: 0.5rem;">Reuse projection operators across PGD, proximal, and ADMM variants.</li>
+                <li style="margin-bottom: 0.5rem;">Profile projection cost if constraints become high-dimensional.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="feasibility-projection-algorithms.html" style="color:#3498db; text-decoration:none;">See POCS and Dykstra built from these projection operators</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="projected-gradient-descent.html" style="color:#3498db; text-decoration:none;">Plug these operators into Projected Gradient Descent</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="proximal-operators-moreau.html" style="color:#3498db; text-decoration:none;">Compare projection maps and proximal maps</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color:#3498db; text-decoration:none;">See how feasibility monitoring appears in solver design</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/projection_library_demo.js"></script>
+</body>
+</html>

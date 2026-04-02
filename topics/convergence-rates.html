@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compare convergence rates across first-order convex optimization methods.">
+    <title>Convergence Rates - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Convergence Rates</h1>
+            <p>Understand sublinear, accelerated, and linear regimes with clear side-by-side comparisons.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Rate Families at a Glance</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;"><strong>Subgradient (non-smooth convex):</strong> often \(O(1/\sqrt{k})\).</li>
+                <li style="margin-bottom:0.5rem;"><strong>Gradient descent (smooth convex):</strong> \(O(1/k)\).</li>
+                <li style="margin-bottom:0.5rem;"><strong>Accelerated smooth methods:</strong> \(O(1/k^2)\).</li>
+                <li style="margin-bottom:0.5rem;"><strong>Strongly convex with proper steps:</strong> linear \(O(\rho^k)\), \(0&lt;\rho&lt;1\).</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Ergodic vs Non-ergodic</h2>
+            <p>
+                Many primal-dual and splitting algorithms provide rate guarantees for averaged iterates (ergodic)
+                before pointwise guarantees (non-ergodic) are available.
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: Rate Curve Comparator</h2>
+            <p>
+                Compare synthetic objective gap trajectories for common asymptotic rates and inspect
+                how condition numbers affect linear convergence factors.
+            </p>
+
+            <div class="example">
+                <label for="cr-steps-range">Iterations:</label>
+                <input type="range" id="cr-steps-range" min="10" max="300" step="10" value="120">
+
+                <label for="cr-kappa-range" style="display:block; margin-top:0.8rem;">Condition number \(\kappa\):</label>
+                <input type="range" id="cr-kappa-range" min="1" max="120" step="1" value="25">
+
+                <label for="cr-start-gap-range" style="display:block; margin-top:0.8rem;">Initial gap:</label>
+                <input type="range" id="cr-start-gap-range" min="0.1" max="10" step="0.1" value="3.0">
+
+                <p id="cr-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Gap vs Iteration</h4>
+                    <canvas id="convergenceRatesCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Summary</h4>
+                    <pre id="convergenceRatesMetrics" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run the comparator to populate metrics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runConvergenceRatesBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">Run Comparator</button>
+                <button id="resetConvergenceRatesBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Worked Example</h2>
+            <div class="example">
+                <h4>How Big Is The Gap After 100 Iterations?</h4>
+                <p>
+                    Suppose the initial gap is \(g_0=1\) and \(\kappa=25\). Then
+                    \(\rho=(\kappa-1)/(\kappa+1)=24/26\approx 0.9231\).
+                </p>
+                <p style="text-align:center; margin:1rem 0;">
+                    \[g_{100}^{\text{linear}}\approx 0.9231^{100}\approx 3.3\times 10^{-4},\]
+                </p>
+                <p>
+                    while benchmark sublinear models give
+                    \(g_{100}^{1/k}\approx 10^{-2}\),
+                    \(g_{100}^{1/k^2}\approx 10^{-4}\),
+                    \(g_{100}^{1/\sqrt{k}}\approx 10^{-1}\).
+                    This gives a quick, practical sense of algorithm class separation.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left:1.5rem; margin-bottom:1rem;">
+                <li style="margin-bottom:0.5rem;"><a href="strong-convexity-smoothness.html" style="color:#3498db; text-decoration:none;">Relate rates to curvature and condition numbers</a></li>
+                <li style="margin-bottom:0.5rem;"><a href="accelerated-gradient-methods.html" style="color:#3498db; text-decoration:none;">See where acceleration improves asymptotics</a></li>
+                <li style="margin-bottom:0.5rem;"><a href="variance-reduction-methods.html" style="color:#3498db; text-decoration:none;">Compare stochastic finite-sum rates</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/convergence_rates_demo.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn conic optimization and the LP/QP/SOCP/SDP modeling hierarchy.">
+    <title>Conic Optimization - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Conic Optimization</h1>
+            <p>Unify LP, QP, SOCP, and SDP models using cone constraints and linear maps.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Canonical Conic Form</h2>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_x c^Tx \quad \text{s.t. } Ax=b,\; x \in \mathcal{K}.\]
+            </p>
+            <p>
+                The cone \(\mathcal{K}\) determines the model class. Different choices recover many practical convex programs.
+            </p>
+        </section>
+
+        <section>
+            <h2>Cone Families</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><strong>LP:</strong> nonnegative orthant cone \(\mathbb{R}_+^n\).</li>
+                <li style="margin-bottom: 0.5rem;"><strong>SOCP:</strong> second-order (Lorentz) cones \(\{(t,z):\|z\|_2\le t\}\).</li>
+                <li style="margin-bottom: 0.5rem;"><strong>SDP:</strong> positive semidefinite cone \(S_+^n\).</li>
+                <li style="margin-bottom: 0.5rem;"><strong>Exponential / Power cones:</strong> entropy and geometric constraints.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Dual Perspective</h2>
+            <p>
+                Conic duality has the same shape with the dual cone \(\mathcal{K}^*\).
+                For self-dual cones (e.g., \(\mathbb{R}_+^n\), Lorentz, and PSD cones), primal and dual geometry align elegantly.
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: Modeling Class Trade-offs</h2>
+            <p>
+                This dashboard compares synthetic complexity and expected accuracy when the same task is modeled
+                as LP, QP, SOCP, or SDP. It is a conceptual planning aid for choosing model classes.
+            </p>
+
+            <div class="example">
+                <label for="conic-dim-range">Problem dimension scale:</label>
+                <input type="range" id="conic-dim-range" min="1" max="10" step="1" value="5">
+
+                <label for="conic-acc-range" style="display:block; margin-top:0.8rem;">Accuracy target level:</label>
+                <input type="range" id="conic-acc-range" min="1" max="10" step="1" value="7">
+
+                <label for="conic-structure-range" style="display:block; margin-top:0.8rem;">Structure exploitation score:</label>
+                <input type="range" id="conic-structure-range" min="1" max="10" step="1" value="6">
+
+                <p id="conic-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Relative Compute Cost</h4>
+                    <canvas id="conicCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Planning Summary</h4>
+                    <pre id="conicMetrics" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Adjust controls to compare model classes.</pre>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Typical Use Cases</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Robust regression and portfolio constraints with SOCP.</li>
+                <li style="margin-bottom: 0.5rem;">Control and covariance design with SDP.</li>
+                <li style="margin-bottom: 0.5rem;">Large sparse resource allocation with LP/QP formulations.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="interior-point-methods.html" style="color: #3498db; text-decoration: none;">Study interior-point solvers for conic models</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">Connect cone constraints to primal-dual algorithm design</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="kkt-slater-conditions.html" style="color: #3498db; text-decoration: none;">Use KKT and Slater conditions to certify conic solutions</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/conic_optimization_demo.js"></script>
+</body>
+</html>

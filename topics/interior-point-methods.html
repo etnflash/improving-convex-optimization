@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn interior-point methods for constrained convex optimization.">
+    <title>Interior-Point Methods - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Interior-Point Methods</h1>
+            <p>Solve constrained convex programs by following the central path through the interior.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Target Problem</h2>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_x \; f_0(x) \quad \text{s.t. } f_i(x) \le 0,\; i=1,\dots,m,\; Ax=b.\]
+            </p>
+            <p>
+                Interior-point methods replace inequality constraints with a smooth barrier and solve a sequence
+                of unconstrained (or equality-constrained) subproblems.
+            </p>
+        </section>
+
+        <section>
+            <h2>Log-Barrier Formulation</h2>
+            <p>
+                Define the barrier
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\phi(x) = -\sum_{i=1}^m \log\big(-f_i(x)\big),\]
+            </p>
+            <p>
+                valid only in the strict interior \(f_i(x)<0\). Then solve
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_x \; t f_0(x) + \phi(x) \quad \text{s.t. } Ax=b,\]
+            </p>
+            <p>
+                where \(t\) increases over outer iterations to approach the original constrained optimum.
+            </p>
+        </section>
+
+        <section>
+            <h2>Central Path and Duality Gap</h2>
+            <p>
+                Solutions \(x^*(t)\) define the central path. As \(t\to\infty\), \(x^*(t)\) approaches the true solution.
+            </p>
+            <p>
+                A standard estimate of suboptimality is
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\text{gap} \approx \frac{m}{t}.\]
+            </p>
+            <p>
+                This gives a principled stopping rule for the outer loop.
+            </p>
+        </section>
+
+        <section>
+            <h2>Newton Step (Inner Solve)</h2>
+            <p>
+                Each barrier subproblem is solved using Newton's method with line search, typically through KKT systems.
+            </p>
+            <pre class="algorithm-code">
+repeat (outer)
+    approximately solve barrier subproblem at current t using Newton steps
+    t <- mu * t    (mu > 1)
+until m / t <= epsilon
+            </pre>
+            <div class="example">
+                <h4>Practical Defaults</h4>
+                <p>
+                    Common choices: \(\mu\in[10,20]\), backtracking line search, and strict-feasibility safeguards.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Interactive: Central Path Gap Decay</h2>
+            <p>
+                Tune \(m\), initial \(t_0\), growth factor \(\mu\), and target \(\varepsilon\).
+                We simulate the outer update \(t \leftarrow \mu t\) and track the standard estimate
+                \(\text{gap} \approx m/t\).
+            </p>
+
+            <div class="example">
+                <label for="ipm-m-range">Number of inequalities \(m\):</label>
+                <input type="range" id="ipm-m-range" min="1" max="200" step="1" value="40">
+
+                <label for="ipm-t0-range" style="display:block; margin-top:0.8rem;">Initial \(t_0\):</label>
+                <input type="range" id="ipm-t0-range" min="1" max="200" step="1" value="5">
+
+                <label for="ipm-mu-range" style="display:block; margin-top:0.8rem;">Growth factor \(\mu\):</label>
+                <input type="range" id="ipm-mu-range" min="1.2" max="20" step="0.2" value="10">
+
+                <label for="ipm-eps-range" style="display:block; margin-top:0.8rem;">Tolerance \(\varepsilon\):</label>
+                <input type="range" id="ipm-eps-range" min="0.0001" max="0.2" step="0.0001" value="0.01">
+
+                <p id="ipm-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Gap Curve</h4>
+                    <canvas id="ipmCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Outer Iteration Log</h4>
+                    <pre id="ipmMetricsBox" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run the demo to populate metrics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runIpmBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">▶ Run Gap Simulation</button>
+                <button id="resetIpmBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">↺ Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Why It Is Powerful</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">High accuracy for medium-to-large convex programs.</li>
+                <li style="margin-bottom: 0.5rem;">Strong theory and robust behavior on LP/QP/SOCP/SDP families.</li>
+                <li style="margin-bottom: 0.5rem;">Primal-dual variants provide excellent stopping diagnostics.</li>
+                <li style="margin-bottom: 0.5rem;">Widely used in mature optimization solvers.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Worked Mini Case: Linear Program</h2>
+            <p>
+                For \(\min c^Tx\) s.t. \(Ax=b,\; x\ge 0\), the barrier subproblem is
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_x \; t c^T x - \sum_i \log x_i \quad \text{s.t. } Ax=b.\]
+            </p>
+            <p>
+                Newton directions are computed from linearized KKT equations, and line search keeps \(x\) positive.
+            </p>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">See where interior-point fits in the solver landscape</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="admm-splitting.html" style="color: #3498db; text-decoration: none;">Compare high-accuracy interior-point with splitting approaches like ADMM</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="projected-gradient-descent.html" style="color: #3498db; text-decoration: none;">Contrast second-order methods with first-order projected methods</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/interior_point_demo.js"></script>
+</body>
+</html>

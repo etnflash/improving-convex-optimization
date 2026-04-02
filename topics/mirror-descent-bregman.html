@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn mirror descent and Bregman divergence for geometry-aware convex optimization.">
+    <title>Mirror Descent &amp; Bregman Divergence - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Mirror Descent &amp; Bregman Divergence</h1>
+            <p>Use problem geometry instead of Euclidean distance to design better first-order updates.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Why Mirror Descent?</h2>
+            <p>
+                Standard gradient descent measures progress with Euclidean distance. But many constrained
+                domains, such as probability simplices, have non-Euclidean geometry. Mirror descent adapts
+                updates to this geometry and often gives cleaner guarantees.
+            </p>
+        </section>
+
+        <section>
+            <h2>Bregman Divergence</h2>
+            <div class="definition">
+                <h4>Definition</h4>
+                <p>
+                    Let \(\psi\) be a differentiable, strictly convex mirror map. The Bregman divergence is
+                </p>
+                <p style="text-align:center; margin: 1rem 0;">
+                    \[D_{\psi}(x,y)=\psi(x)-\psi(y)-\nabla\psi(y)^T(x-y).\]
+                </p>
+                <p>
+                    It is always nonnegative, but generally not symmetric.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Mirror Descent Update</h2>
+            <p>
+                For minimizing convex \(f\) over a convex set \(C\), a common form is
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[x_{k+1}=\arg\min_{x\in C}\left\{\eta_k g_k^T x + D_{\psi}(x,x_k)\right\},\]
+            </p>
+            <p>
+                where \(g_k\in\partial f(x_k)\) and \(\eta_k\) is a step size.
+            </p>
+        </section>
+
+        <section>
+            <h2>Dual-Space View</h2>
+            <p>
+                Mirror descent can be read as a gradient step in dual coordinates:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\nabla\psi(x_{k+1}) = \nabla\psi(x_k) - \eta_k g_k,\]
+            </p>
+            <p>
+                followed by mapping back to primal space through \((\nabla\psi)^{-1}\).
+            </p>
+        </section>
+
+        <section>
+            <h2>Classic Example: Entropy Mirror Map</h2>
+            <div class="example">
+                <h4>Simplex Optimization</h4>
+                <p>
+                    On the simplex, choose \(\psi(x)=\sum_i x_i\log x_i\). Then \(D_\psi\) becomes KL divergence,
+                    and mirror descent yields multiplicative weights / exponentiated-gradient style updates.
+                </p>
+            </div>
+            <p>
+                This geometry respects positivity and normalization naturally, unlike naive Euclidean steps.
+            </p>
+        </section>
+
+        <section>
+            <h2>When to Use It</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Probability vectors, simplex constraints, and distributions.</li>
+                <li style="margin-bottom: 0.5rem;">High-dimensional sparse problems where geometry-aware bounds help.</li>
+                <li style="margin-bottom: 0.5rem;">Online convex optimization and regret-minimization settings.</li>
+                <li style="margin-bottom: 0.5rem;">Primal-dual schemes related to Bregman proximal updates.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Practice Checklist</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Compare Euclidean projection vs KL-based mirror updates on a simplex toy problem.</li>
+                <li style="margin-bottom: 0.5rem;">Derive the update for entropy mirror map with linear loss.</li>
+                <li style="margin-bottom: 0.5rem;">Verify that \(D_{\psi}(x,y)\ge 0\) numerically for random points.</li>
+                <li style="margin-bottom: 0.5rem;">Relate mirror descent to proximal point updates in dual space.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="proximal-operators-moreau.html" style="color: #3498db; text-decoration: none;">Compare mirror updates with proximal methods</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">Place mirror descent in the broader algorithm playbook</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="conjugate-fenchel-duality.html" style="color: #3498db; text-decoration: none;">Connect dual-space steps to conjugate/Fenchel viewpoints</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -35,34 +35,282 @@
                 Each module blends plain-language explanations, mathematical rigor, and lightweight visuals.
                 Work through them in order or cherry-pick the concepts you need right now.
             </p>
+            <p id="demo-count-summary" class="demo-summary">Interactive demos: calculating...</p>
 
             <div class="topics-grid">
                 <article class="topic-card">
-                    <span class="status-badge status-live">Live</span>
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                    </div>
                     <h3>Convexity</h3>
                     <p>Define convex sets, see geometric intuition, and explore classic examples like the unit ball.</p>
                     <a href="convexity.html">Open lesson →</a>
                 </article>
 
                 <article class="topic-card">
-                    <span class="status-badge status-live">Live</span>
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
                     <h3>Convex Functions</h3>
                     <p>Understand the chord test, examples/non-examples, and interact with the convexity inequality.</p>
                     <a href="convex-functions.html">Open lesson →</a>
                 </article>
 
                 <article class="topic-card">
-                    <span class="status-badge status-coming">Coming soon</span>
-                    <h3>Optimization Problems</h3>
-                    <p>Formulate objective + constraints, study epigraph form, and classify standard problem families.</p>
-                    <a href="#">In progress</a>
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Strong Convexity &amp; Smoothness</h3>
+                    <p>Quantify curvature bounds and condition numbers to predict first-order convergence speed.</p>
+                    <a href="strong-convexity-smoothness.html">Open lesson →</a>
                 </article>
 
                 <article class="topic-card">
-                    <span class="status-badge status-coming">Coming soon</span>
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Accelerated Gradient Methods</h3>
+                    <p>Compare Nesterov-style momentum with plain gradient descent on ill-conditioned objectives.</p>
+                    <a href="accelerated-gradient-methods.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Subgradients &amp; Optimality</h3>
+                    <p>Learn subdifferentials, non-smooth first-order conditions, and soft-thresholding intuition.</p>
+                    <a href="subgradients-optimality.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Jensen's Inequality</h3>
+                    <p>Use convexity to relate average inputs and average outputs with clean expectation bounds.</p>
+                    <a href="jensens-inequality.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                    </div>
+                    <h3>Conjugate Functions &amp; Fenchel Duality</h3>
+                    <p>Learn convex conjugates, Fenchel-Young inequality, and dual formulations for modern solvers.</p>
+                    <a href="conjugate-fenchel-duality.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>KKT and Slater Conditions</h3>
+                    <p>Use feasibility, stationarity, and complementarity to certify convex constrained solutions.</p>
+                    <a href="kkt-slater-conditions.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                    </div>
+                    <h3>Proximal Operators &amp; Moreau Envelope</h3>
+                    <p>Master prox updates, smooth envelopes, and decomposition identities for composite optimization.</p>
+                    <a href="proximal-operators-moreau.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                    </div>
+                    <h3>Mirror Descent &amp; Bregman Divergence</h3>
+                    <p>Learn geometry-aware first-order updates, KL-based steps, and dual-space interpretations.</p>
+                    <a href="mirror-descent-bregman.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>ADMM</h3>
+                    <p>Use alternating minimization with dual updates to solve split convex objectives at scale.</p>
+                    <a href="admm-splitting.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Primal-Dual Methods</h3>
+                    <p>Run PDHG/Chambolle-Pock style updates with joint primal and dual residual monitoring.</p>
+                    <a href="primal-dual-methods.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Projected Gradient Descent</h3>
+                    <p>Learn constrained first-order updates using projection operators and practical step-size rules.</p>
+                    <a href="projected-gradient-descent.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Line Search Methods</h3>
+                    <p>Use Armijo backtracking and curvature-aware rules to adapt step sizes safely.</p>
+                    <a href="line-search-methods.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Projection Library for Convex Sets</h3>
+                    <p>Explore and compare projection operators for box, ball, simplex, and affine constraints.</p>
+                    <a href="projection-library.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Feasibility &amp; Projection Algorithms</h3>
+                    <p>Compare POCS and Dykstra for finding points in intersections of convex sets.</p>
+                    <a href="feasibility-projection-algorithms.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Interior-Point Methods</h3>
+                    <p>Use barrier models, Newton steps, and central-path logic for accurate constrained solutions.</p>
+                    <a href="interior-point-methods.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Conic Optimization</h3>
+                    <p>Model LP/QP/SOCP/SDP under a unified cone-constrained optimization framework.</p>
+                    <a href="conic-optimization.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Convergence Rates</h3>
+                    <p>Compare sublinear, accelerated, and linear decay regimes across solver families.</p>
+                    <a href="convergence-rates.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Operator Splitting Methods</h3>
+                    <p>Understand forward-backward, Douglas-Rachford, and splitting-style fixed-point updates.</p>
+                    <a href="operator-splitting-methods.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Solver Engineering Practice</h3>
+                    <p>Tune scaling, warm starts, and stopping criteria for robust practical optimization runs.</p>
+                    <a href="solver-engineering-practice.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Stochastic Gradient Methods</h3>
+                    <p>Learn scalable finite-sum optimization with SGD, mini-batches, and variance-reduction intuition.</p>
+                    <a href="stochastic-gradient-methods.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Variance Reduction Methods</h3>
+                    <p>Stabilize stochastic optimization using SVRG/SAGA corrections for finite-sum objectives.</p>
+                    <a href="variance-reduction-methods.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Coordinate Descent</h3>
+                    <p>Use coordinate-wise and block updates for efficient optimization on sparse convex objectives.</p>
+                    <a href="coordinate-descent.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Regularization Paths</h3>
+                    <p>Track coefficient trajectories across L1, L2, and elastic regularization strengths.</p>
+                    <a href="regularization-paths.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
+                    <h3>Optimization Diagnostics Dashboard</h3>
+                    <p>Monitor objective, feasibility, gradient norm, and gap-style metrics in one interactive view.</p>
+                    <a href="optimization-diagnostics.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                    </div>
+                    <h3>Convex Optimization Problems</h3>
+                    <p>Formulate objective + constraints, study epigraph form, and classify standard problem families.</p>
+                    <a href="convex-optimization.html">Open lesson →</a>
+                </article>
+
+                <article class="topic-card">
+                    <div class="badge-row">
+                        <span class="status-badge status-live">Live</span>
+                        <span class="status-badge status-demo">Demo</span>
+                    </div>
                     <h3>Algorithms &amp; Duality</h3>
                     <p>Projected gradients, interior-point ideas, and dual intuition to connect geometry with solvers.</p>
-                    <a href="#">In progress</a>
+                    <a href="algorithms-duality.html">Open lesson →</a>
                 </article>
             </div>
         </section>
@@ -70,8 +318,9 @@
         <section>
             <h2>How to Use This Roadmap</h2>
             <ul style="margin-left: 1.5rem;">
-                <li style="margin-bottom: 0.5rem;">Follow the order for a gentle progression from sets → functions → problems.</li>
+                <li style="margin-bottom: 0.5rem;">Follow the order for a gentle progression from sets → functions → curvature/conditioning → acceleration → subgradients → Jensen → conjugates → KKT/Slater → proximal methods → mirror descent → ADMM → primal-dual methods → projected gradient → line search → projection library → feasibility/projection algorithms → interior-point → conic optimization → convergence rates → operator splitting → solver engineering → stochastic methods → variance reduction → coordinate descent → regularization paths → diagnostics → problems.</li>
                 <li style="margin-bottom: 0.5rem;">Use the status badges to spot fresh content instantly.</li>
+                <li style="margin-bottom: 0.5rem;">Cards marked <strong>Demo</strong> include hands-on interactive widgets.</li>
                 <li style="margin-bottom: 0.5rem;">Check back often: new interactive demos and topics will drop here first.</li>
             </ul>
         </section>
@@ -79,8 +328,10 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Improving Convex Optimization. An open educational resource.</p>
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
         </div>
     </footer>
+
+    <script src="../scripts/topics_index_summary.js"></script>
 </body>
 </html>

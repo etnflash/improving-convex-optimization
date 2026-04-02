@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn line search strategies including Armijo backtracking and Wolfe conditions.">
+    <title>Line Search Methods - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Line Search Methods</h1>
+            <p>Choose step sizes adaptively using sufficient decrease and curvature criteria.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Why Line Search?</h2>
+            <p>
+                Gradient methods need a step size \(\alpha_k\). A fixed value can be too small (slow) or too large (unstable).
+                Line search computes \(\alpha_k\) from local objective and gradient information.
+            </p>
+        </section>
+
+        <section>
+            <h2>Armijo Backtracking</h2>
+            <p>
+                For descent direction \(p_k\), accept \(\alpha\) when
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[f(x_k+\alpha p_k) \le f(x_k) + c_1\alpha\nabla f(x_k)^Tp_k,\]
+            </p>
+            <p>
+                with \(c_1\in(0,1)\). Start from \(\alpha_0\), shrink by \(\rho\in(0,1)\) until the condition holds.
+            </p>
+            <pre class="algorithm-code">
+alpha = alpha0
+while f(x + alpha p) > f(x) + c1 * alpha * grad_f(x)^T p:
+    alpha = rho * alpha
+return alpha
+            </pre>
+        </section>
+
+        <section>
+            <h2>Wolfe Conditions</h2>
+            <p>
+                Strong Wolfe adds a curvature condition to avoid steps that are too short:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[|\nabla f(x_k+\alpha p_k)^T p_k| \le c_2 |\nabla f(x_k)^T p_k|,\quad c_1<c_2<1.\]
+            </p>
+            <p>
+                Armijo controls decrease, Wolfe controls slope quality. Together they produce robust progress.
+            </p>
+        </section>
+
+        <section>
+            <h2>Interactive: Fixed Step vs Backtracking</h2>
+            <p>
+                We optimize a smooth quadratic and compare objective curves for:
+                fixed \(\alpha\) and Armijo backtracking.
+                Tune parameters to see when adaptive steps save iterations.
+            </p>
+
+            <div class="example">
+                <label for="ls-fixed-alpha">Fixed step size:</label>
+                <input type="range" id="ls-fixed-alpha" min="0.02" max="1.2" step="0.02" value="0.55">
+
+                <label for="ls-c1" style="display:block; margin-top:0.8rem;">Armijo c1:</label>
+                <input type="range" id="ls-c1" min="0.0001" max="0.1" step="0.0005" value="0.01">
+
+                <label for="ls-rho" style="display:block; margin-top:0.8rem;">Backtracking shrink factor rho:</label>
+                <input type="range" id="ls-rho" min="0.1" max="0.95" step="0.05" value="0.5">
+
+                <label for="ls-steps" style="display:block; margin-top:0.8rem;">Iterations:</label>
+                <input type="range" id="ls-steps" min="5" max="120" step="5" value="60">
+
+                <p id="ls-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Objective Decay Comparison</h4>
+                    <canvas id="lineSearchCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Run Diagnostics</h4>
+                    <pre id="lineSearchMetrics" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run the demo to populate diagnostics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runLineSearchBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">Run Comparison</button>
+                <button id="resetLineSearchBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="projected-gradient-descent.html" style="color: #3498db; text-decoration: none;">Apply line search inside constrained projected updates</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="accelerated-gradient-methods.html" style="color: #3498db; text-decoration: none;">Compare line-search tuning with momentum acceleration</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="solver-engineering-practice.html" style="color: #3498db; text-decoration: none;">Integrate step-size control into practical solver engineering workflows</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="optimization-diagnostics.html" style="color: #3498db; text-decoration: none;">Track step sizes with objective and stationarity diagnostics</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/line_search_demo.js"></script>
+</body>
+</html>

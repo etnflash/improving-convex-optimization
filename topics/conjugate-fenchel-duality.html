@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn convex conjugates and Fenchel duality for modern convex optimization.">
+    <title>Conjugate Functions &amp; Fenchel Duality - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Conjugate Functions &amp; Fenchel Duality</h1>
+            <p>Re-express convex objectives in dual coordinates to derive elegant bounds and algorithms.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Convex Conjugate</h2>
+            <div class="definition">
+                <h4>Definition</h4>
+                <p>
+                    For a proper function \(f: \mathbb{R}^n \to \mathbb{R} \cup \{+\infty\}\),
+                    the convex conjugate \(f^*\) is
+                </p>
+                <p style="text-align:center; margin: 1rem 0;">
+                    \[f^*(y) = \sup_x \{y^T x - f(x)\}.\]
+                </p>
+                <p>
+                    The conjugate maps from primal variable \(x\) to dual variable \(y\),
+                    capturing supporting hyperplanes of \(f\).
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Fenchel-Young Inequality</h2>
+            <p>
+                A core identity linking primal and dual views is:
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[f(x) + f^*(y) \ge y^T x.\]
+            </p>
+            <p>
+                Equality holds when \(y \in \partial f(x)\). This is the bridge between subgradients
+                and dual certificates.
+            </p>
+        </section>
+
+        <section>
+            <h2>Examples of Conjugates</h2>
+            <div class="example">
+                <h4>Quadratic</h4>
+                <p>\(f(x)=\tfrac{1}{2}\|x\|_2^2\) has \(f^*(y)=\tfrac{1}{2}\|y\|_2^2\).</p>
+            </div>
+            <div class="example">
+                <h4>Norm</h4>
+                <p>
+                    For \(f(x)=\|x\|\), the conjugate is the indicator of the dual unit ball:
+                    \(f^*(y)=I_{\|y\|_*\le 1}(y)\).
+                </p>
+            </div>
+            <div class="example">
+                <h4>Indicator Function</h4>
+                <p>
+                    If \(f=I_C\) for a convex set \(C\), then \(f^*(y)=\sigma_C(y)=\sup_{x\in C} y^T x\),
+                    the support function of \(C\).
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Fenchel Dual Problem</h2>
+            <p>
+                For primal problems of the form
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\min_x \; f(Ax) + g(x),\]
+            </p>
+            <p>
+                one dual form is
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[\max_y \; -f^*(y) - g^*(-A^T y).\]
+            </p>
+            <p>
+                This form appears in proximal splitting, mirror descent interpretations, and many ML models.
+            </p>
+        </section>
+
+        <section>
+            <h2>Worked Mini Example</h2>
+            <div class="worked-problem">
+                <h4>From L2-Regularized Linear Objective to Dual</h4>
+                <p style="text-align:center; margin: 0.7rem 0;">
+                    \[\min_x \; c^T x + \tfrac{\lambda}{2}\|x\|_2^2\]
+                </p>
+                <p>
+                    Here, \(g(x)=c^T x + \tfrac{\lambda}{2}\|x\|_2^2\) has conjugate
+                    \(g^*(u)=\tfrac{1}{2\lambda}\|u-c\|_2^2\). Conjugates convert regularized primal
+                    forms into smooth dual penalties.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Why This Matters in Practice</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Derives dual objectives systematically instead of ad-hoc algebra.</li>
+                <li style="margin-bottom: 0.5rem;">Explains proximal operators through Moreau decompositions.</li>
+                <li style="margin-bottom: 0.5rem;">Supports primal-dual algorithms used in large-scale optimization.</li>
+                <li style="margin-bottom: 0.5rem;">Provides dual gaps as stopping criteria with theoretical guarantees.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="proximal-operators-moreau.html" style="color: #3498db; text-decoration: none;">Move to proximal operators and the Moreau envelope</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="subgradients-optimality.html" style="color: #3498db; text-decoration: none;">Review subgradients to understand equality conditions</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="algorithms-duality.html" style="color: #3498db; text-decoration: none;">Connect conjugates to primal-dual algorithms</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="convex-optimization.html" style="color: #3498db; text-decoration: none;">Return to model templates and problem classes</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Learn variance reduction ideas such as SVRG and SAGA for finite-sum convex optimization.">
+    <title>Variance Reduction Methods - Convex Optimization</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="logo">Convex Optimization</div>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="index.html">Topics</a></li>
+                <li><a href="../index.html#about">About</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Variance Reduction Methods (SVRG/SAGA)</h1>
+            <p>Reduce stochastic gradient noise to recover faster finite-sum convergence behavior.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section>
+            <h2>Finite-Sum Structure</h2>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[F(x)=\frac{1}{N}\sum_{i=1}^N f_i(x).\]
+            </p>
+            <p>
+                Plain SGD is cheap per iteration but noisy near the solution.
+                Variance reduction reuses finite-sum structure to keep updates informative.
+            </p>
+        </section>
+
+        <section>
+            <h2>SVRG Idea</h2>
+            <p>
+                At snapshot \(\tilde{x}\), compute full gradient \(\nabla F(\tilde{x})\).
+                Then use corrected stochastic direction
+            </p>
+            <p style="text-align:center; margin: 1rem 0;">
+                \[g_k = \nabla f_{i_k}(x_k)-\nabla f_{i_k}(\tilde{x})+\nabla F(\tilde{x}).\]
+            </p>
+            <p>
+                This keeps unbiasedness while shrinking variance as iterates approach the optimum.
+            </p>
+        </section>
+
+        <section>
+            <h2>SAGA Idea</h2>
+            <p>
+                SAGA stores a memory table of historical component gradients and updates one entry per step,
+                producing low-variance directions without periodic full passes.
+            </p>
+            <div class="example">
+                <h4>Rule of Thumb</h4>
+                <p>
+                    Use SVRG when occasional full passes are cheap enough; use SAGA when memory is available and streaming updates matter.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Interactive: SGD vs SVRG on a 1D Finite Sum</h2>
+            <p>
+                We compare objective trajectories for a synthetic finite-sum least-squares model.
+                Try higher noise and larger condition numbers to see where SVRG stabilizes progress.
+            </p>
+
+            <div class="example">
+                <label for="vr-eta-range">Step size \(\eta\):</label>
+                <input type="range" id="vr-eta-range" min="0.005" max="0.25" step="0.005" value="0.06">
+
+                <label for="vr-epochs-range" style="display:block; margin-top:0.8rem;">Epochs:</label>
+                <input type="range" id="vr-epochs-range" min="2" max="40" step="1" value="16">
+
+                <label for="vr-inner-range" style="display:block; margin-top:0.8rem;">SVRG inner steps per epoch:</label>
+                <input type="range" id="vr-inner-range" min="5" max="120" step="5" value="30">
+
+                <label for="vr-noise-range" style="display:block; margin-top:0.8rem;">Data noise scale:</label>
+                <input type="range" id="vr-noise-range" min="0" max="1.5" step="0.05" value="0.6">
+
+                <p id="vr-params-display" style="margin-top:1rem;"></p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin:1.5rem 0;">
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Objective vs Gradient Evaluations</h4>
+                    <canvas id="varianceReductionCanvas" width="420" height="320" style="border:1px solid #ccc; background:#fafafa; border-radius:6px;"></canvas>
+                </div>
+                <div>
+                    <h4 style="margin-bottom:0.8rem;">Run Summary</h4>
+                    <pre id="varianceReductionMetrics" style="background:#0f172a; color:#e2e8f0; padding:1rem; border-radius:6px; font-size:0.9rem; overflow-y:auto; max-height:320px;">Run the demo to populate metrics.</pre>
+                </div>
+            </div>
+
+            <div style="margin-top:1rem; text-align:center;">
+                <button id="runVarianceReductionBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#3182ce; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:0.5rem;">Run Comparison</button>
+                <button id="resetVarianceReductionBtn" style="padding:0.7rem 1.4rem; font-size:1rem; background:#718096; color:white; border:none; border-radius:6px; cursor:pointer;">Reset</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>When It Helps Most</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;">Finite-sum datasets repeatedly scanned across epochs.</li>
+                <li style="margin-bottom: 0.5rem;">Strongly convex regularized empirical risk objectives.</li>
+                <li style="margin-bottom: 0.5rem;">Regimes where SGD plateaus due to gradient noise floor.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Steps</h2>
+            <ul style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                <li style="margin-bottom: 0.5rem;"><a href="stochastic-gradient-methods.html" style="color: #3498db; text-decoration: none;">Review baseline stochastic methods before variance reduction</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="convergence-rates.html" style="color: #3498db; text-decoration: none;">Compare stochastic and deterministic asymptotic rate patterns</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="regularization-paths.html" style="color: #3498db; text-decoration: none;">Study how regularization changes curvature and convergence</a></li>
+                <li style="margin-bottom: 0.5rem;"><a href="optimization-diagnostics.html" style="color: #3498db; text-decoration: none;">Track gradient norm and objective jointly for robust stopping</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Improving Convex Optimization. An open educational resource.</p>
+        </div>
+    </footer>
+
+    <script src="../scripts/variance_reduction_demo.js"></script>
+</body>
+</html>
